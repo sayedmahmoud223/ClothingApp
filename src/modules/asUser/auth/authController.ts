@@ -1,0 +1,38 @@
+import { NextFunction, Response, Request } from "express";
+import { authService } from "./authService";
+
+
+
+class AuthController {
+
+    async signup(req: Request, res: Response, next: NextFunction) {
+        const newUser = await authService.signup(req.body, next)
+        return res.status(201).json({ success: true, message: "Success", data: { _id: newUser._id, email: newUser.email, role: newUser.role } });
+    }
+
+    async confirmEmail(req: Request, res: Response, next: NextFunction) {
+        await authService.confirmEmail(req.params, next)
+        return res.send("go to login")
+    }
+
+    async login(req: Request, res: Response, next: NextFunction) {
+        const { user, token, refresh_Token } = await authService.login(req.body, next)
+        res.cookie("access_token", token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 15 * 60 * 1000
+        })
+        res.cookie("rerfresh-token", refresh_Token, {
+            httpOnly: true,
+            secure: true,
+            sameSite: "strict",
+            maxAge: 7 * 24 * 60 * 60 * 1000
+        })
+        return res.status(200).json({ success: true, message: "Success", data: { _id: user._id, email: user.email } });
+    }
+
+}
+
+
+export const authController: AuthController = new AuthController()
