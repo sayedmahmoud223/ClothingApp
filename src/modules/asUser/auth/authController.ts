@@ -29,7 +29,7 @@ class AuthController {
             sameSite: "strict",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
-        return res.status(200).json({ success: true, message: "Success", data: { _id: user._id, email: user.email } });
+        return res.status(200).json({ success: true, message: "Success", data: { _id: user._id, email: user.email, role: user.role } });
     }
 
 }
