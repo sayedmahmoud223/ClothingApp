@@ -3,13 +3,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initApp = void 0;
+exports.initApp = exports.BaseUrl = void 0;
 const errorHandling_1 = require("../utils/errorHandling");
 const dbConnection_1 = __importDefault(require("../DB/dbConnection"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const authRouter_1 = __importDefault(require("../modules/asUser/auth/authRouter"));
 const adminRouter_1 = __importDefault(require("../modules/asAdmin/adminRouter"));
+exports.BaseUrl = process.env.ONLINE_BASE_URL;
 const initApp = (app, express) => {
     (0, dbConnection_1.default)();
     app.use((0, cors_1.default)({
