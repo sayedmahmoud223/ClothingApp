@@ -8,7 +8,7 @@ console.log("🔄 Email event listener is registered..."); // ✅ Add this log t
 
 eventEmitter.on("confirmEmail", async ({ email, vCode }) => {
     const subject = "Confirm Email";
-    const link = `http://localhost:3050/api/v1/auth/confirmEmail/${vCode}`;
+    const link = `${process.env.ONLINE_BASE_URL}/auth/confirmEmail/${vCode}`;
     const html = template_Email(link);
 
     const info = await sendEmail({ to: email, subject, html });

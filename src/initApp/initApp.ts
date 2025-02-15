@@ -5,6 +5,7 @@ import cors from "cors"
 import cookieParser from "cookie-parser"
 import authRouter from "../modules/asUser/auth/authRouter"
 import adminRouter from "../modules/asAdmin/adminRouter"
+export const BaseUrl = process.env.ONLINE_BASE_URL
 export const initApp = (app: any, express: any) => {
     connectDB()
     app.use(cors({
