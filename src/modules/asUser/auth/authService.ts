@@ -55,18 +55,22 @@ class AuthService {
     }
 
     async login(reqBody: ILogin, next: any) {
-        const { email, password } = reqBody;
+        const { email, password } = reqBody;        
         // if user not exist
+        if (!password) {
+            return next(new ResError("password is requierd", 400))
+        }
         const user = await userModel.findOne({ email, isDeleted: false })
         if (!user) return next(new Error(' Not register account', { cause: 404 }))
+        if (user.provider === "GOOGLE") return next(new ResError("login with google", 400))
         if (!user.confirmEmail) return next(new ResError('please confirm email first..', 400))
         // compared user password
         const match = methodsWillUsed.compare({ plaintext: password, hashValue: user.password as string })
         if (!match) return next(new ResError("in-valid password", 400))
         // generate user token
         const token = methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role } })
-        const refresh_Token = methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role }, expiresIn: 60 * 60 * 24 * 365 })
-        return { user, token, refresh_Token }
+        const refresh_token = methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role }, expiresIn: 60 * 60 * 24 * 365 })
+        return { user, token, refresh_token }
     }
 
 }

@@ -1,6 +1,7 @@
 import { Schema, model, Types } from 'mongoose';
 import { methodsWillUsed } from "../../utils/methodsWillUsed";
 import { randomUUID } from "crypto";
+import { ResError } from '../../utils/errorHandling';
 
 
 const userSchema = new Schema({
@@ -9,6 +10,7 @@ const userSchema = new Schema({
         required: [true, 'userName is required'],
         min: [2, 'minimum length 2 char'],
         max: [20, 'max length 2 char'],
+        lowercase: true
     },
     email: {
         type: String,
@@ -17,7 +19,7 @@ const userSchema = new Schema({
     },
     password: {
         type: String,
-        required: [true, 'password is required'],
+        select: false
     },
     phone: {
         type: String,
@@ -27,6 +29,7 @@ const userSchema = new Schema({
         default: 'User',
         enum: ['User', 'Admin']
     },
+    googleId: String,
     provider: {
         type: String,
         default: 'SYSTEM',
@@ -50,7 +53,9 @@ const userSchema = new Schema({
 })
 
 userSchema.pre('save', function () {
-    this.password = methodsWillUsed.hash({ plaintext: this.password })
+    if (this.password) {
+        this.password = methodsWillUsed.hash({ plaintext: this.password })
+    }
 })
 userSchema.pre('save', function () {
     this.vCode = randomUUID()

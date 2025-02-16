@@ -9,6 +9,7 @@ const userSchema = new mongoose_1.Schema({
         required: [true, 'userName is required'],
         min: [2, 'minimum length 2 char'],
         max: [20, 'max length 2 char'],
+        lowercase: true
     },
     email: {
         type: String,
@@ -17,7 +18,7 @@ const userSchema = new mongoose_1.Schema({
     },
     password: {
         type: String,
-        required: [true, 'password is required'],
+        select: false
     },
     phone: {
         type: String,
@@ -27,6 +28,7 @@ const userSchema = new mongoose_1.Schema({
         default: 'User',
         enum: ['User', 'Admin']
     },
+    googleId: String,
     provider: {
         type: String,
         default: 'SYSTEM',
@@ -49,7 +51,9 @@ const userSchema = new mongoose_1.Schema({
     timestamps: true
 });
 userSchema.pre('save', function () {
-    this.password = methodsWillUsed_1.methodsWillUsed.hash({ plaintext: this.password });
+    if (this.password) {
+        this.password = methodsWillUsed_1.methodsWillUsed.hash({ plaintext: this.password });
+    }
 });
 userSchema.pre('save', function () {
     this.vCode = (0, crypto_1.randomUUID)();

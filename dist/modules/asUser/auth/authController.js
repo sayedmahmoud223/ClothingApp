@@ -12,14 +12,14 @@ class AuthController {
         return res.send("go to login");
     }
     async login(req, res, next) {
-        const { user, token, refresh_Token } = await authService_1.authService.login(req.body, next);
+        const { user, token, refresh_token } = await authService_1.authService.login(req.body, next);
         res.cookie("access_token", token, {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
             maxAge: 15 * 60 * 1000
         });
-        res.cookie("rerfresh-token", refresh_Token, {
+        res.cookie("rerfresh-token", refresh_token, {
             httpOnly: true,
             secure: true,
             sameSite: "strict",
