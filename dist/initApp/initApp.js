@@ -12,8 +12,8 @@ const authRouter_1 = __importDefault(require("../modules/asUser/auth/authRouter"
 const googleAuthRouter_1 = __importDefault(require("../modules/asUser/authGoogle/googleAuthRouter"));
 const adminRouter_1 = __importDefault(require("../modules/asAdmin/adminRouter"));
 exports.BaseUrl = process.env.ONLINE_BASE_URL;
-const initApp = (app, express) => {
-    (0, dbConnection_1.default)();
+const initApp = async (app, express) => {
+    await (0, dbConnection_1.default)();
     app.use((0, cors_1.default)({
         origin: "http://localhost:3000",
         credentials: true

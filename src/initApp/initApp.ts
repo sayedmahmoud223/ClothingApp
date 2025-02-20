@@ -7,8 +7,8 @@ import authRouter from "../modules/asUser/auth/authRouter"
 import googleAuthRouter from "../modules/asUser/authGoogle/googleAuthRouter"
 import adminRouter from "../modules/asAdmin/adminRouter"
 export const BaseUrl = process.env.ONLINE_BASE_URL
-export const initApp = (app: any, express: any) => {
-    connectDB()
+export const initApp = async (app: any, express: any) => {
+    await connectDB()
     app.use(cors({
         origin: "http://localhost:3000",
         credentials: true

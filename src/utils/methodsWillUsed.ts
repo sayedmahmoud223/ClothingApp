@@ -36,6 +36,8 @@ class MethodsWillUsed {
 
     // Method to compare a plaintext value with a hash
     compare = ({ plaintext, hashValue }: CompareParams): boolean => {
+        console.log({hashValue});
+        
         if (!hashValue) {
             throw new ResError("hashValue is requierd", 400)
         }

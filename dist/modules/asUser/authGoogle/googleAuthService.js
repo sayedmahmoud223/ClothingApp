@@ -19,7 +19,7 @@ class GoogleAuthService {
             const tokenResponse = await axios_1.default.post("https://oauth2.googleapis.com/token", {
                 client_id: process.env.clientID,
                 client_secret: process.env.clientSecret,
-                redirect_uri: process.env.REDIRECT_URI,
+                redirect_uri: process.env.LOCAL_REDIRECT_URI,
                 grant_type: "authorization_code",
                 code,
             });
@@ -44,6 +44,7 @@ class GoogleAuthService {
                     confirmEmail: true
                 });
             }
+            user.vCode = "";
             const refresh_token = methodsWillUsed_1.methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email }, expiresIn: "7d" });
             return { refresh_token, access_token };
         }

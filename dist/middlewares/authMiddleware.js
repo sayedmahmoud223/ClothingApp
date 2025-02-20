@@ -15,7 +15,7 @@ const Auth = (AccessRoles = []) => {
     return (0, errorHandling_1.asyncHandler)(async (req, res, next) => {
         // Correct way to get token from cookies
         const { access_token } = req.cookies;
-        console.log({ cookie: req.cookies });
+        // console.log({ cookie: req.cookies });
         if (!access_token)
             return next(new errorHandling_1.ResError("Access token is missing", 400));
         // Verify token
@@ -23,14 +23,14 @@ const Auth = (AccessRoles = []) => {
         if (!decoded)
             return next(new errorHandling_1.ResError("Invalid token", 400));
         // Fetch user from DB
-        const user = await userModel_1.default.findById(decoded._id).select("userName email role");
+        const user = await userModel_1.default.findById(decoded._id).select("_id userName email role");
         if (!user)
             return next(new errorHandling_1.ResError("User not found", 400));
         // Check if user role is authorized
         if (!AccessRoles.includes(user.role)) {
             return next(new errorHandling_1.ResError("Not authorized", 403));
         }
-        req.user = user;
+        req.decoded = user;
         next();
     });
 };

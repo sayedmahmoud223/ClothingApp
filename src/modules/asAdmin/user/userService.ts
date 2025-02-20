@@ -26,7 +26,7 @@ class UserService {
             .select("userName email age role phone provider isDeleted")
         return user
     }
-    
+
 }
 
 export const userService: UserService = new UserService()

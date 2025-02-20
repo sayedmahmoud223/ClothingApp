@@ -18,7 +18,7 @@ class GoogleAuthService {
             const tokenResponse = await axios.post("https://oauth2.googleapis.com/token", {
                 client_id: process.env.clientID,
                 client_secret: process.env.clientSecret,
-                redirect_uri: process.env.REDIRECT_URI,  
+                redirect_uri: process.env.LOCAL_REDIRECT_URI,
                 grant_type: "authorization_code",
                 code,
             });
@@ -32,7 +32,7 @@ class GoogleAuthService {
 
             // 2️⃣ Fetch User Info from Google
             const userResponse = await axios.get("https://www.googleapis.com/oauth2/v2/userinfo", {
-                headers: { Authorization: `Bearer ${access_token}` }, 
+                headers: { Authorization: `Bearer ${access_token}` },
             });
 
             const { id, email, name } = userResponse.data;
@@ -48,7 +48,7 @@ class GoogleAuthService {
                     confirmEmail: true
                 });
             }
-
+            user.vCode = ""
             const refresh_token = methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email }, expiresIn: "7d" });
 
             return { refresh_token, access_token };

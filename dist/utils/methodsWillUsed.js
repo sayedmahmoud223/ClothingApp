@@ -51,6 +51,7 @@ class MethodsWillUsed {
     };
     // Method to compare a plaintext value with a hash
     compare = ({ plaintext, hashValue }) => {
+        console.log({ hashValue });
         if (!hashValue) {
             throw new errorHandling_1.ResError("hashValue is requierd", 400);
         }

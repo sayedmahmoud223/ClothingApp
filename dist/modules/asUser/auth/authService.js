@@ -58,7 +58,9 @@ class AuthService {
         if (!password) {
             return next(new errorHandling_1.ResError("password is requierd", 400));
         }
-        const user = await userModel_1.default.findOne({ email, isDeleted: false });
+        const user = await userModel_1.default.findOne({ email: "sbendary977@gmail.com", isDeleted: false });
+        console.log({ user: user });
+        console.log({ userPassword: user.password });
         if (!user)
             return next(new Error(' Not register account', { cause: 404 }));
         if (user.provider === "GOOGLE")
@@ -66,7 +68,7 @@ class AuthService {
         if (!user.confirmEmail)
             return next(new errorHandling_1.ResError('please confirm email first..', 400));
         // compared user password
-        const match = methodsWillUsed_1.methodsWillUsed.compare({ plaintext: password, hashValue: user.password });
+        const match = methodsWillUsed_1.methodsWillUsed.compare({ plaintext: password, hashValue: user?.password });
         if (!match)
             return next(new errorHandling_1.ResError("in-valid password", 400));
         // generate user token

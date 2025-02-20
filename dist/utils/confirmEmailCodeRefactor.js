@@ -11,7 +11,9 @@ console.log("🔄 Email event listener is registered..."); // ✅ Add this log t
 eventEmitter_1.eventEmitter.on("confirmEmail", async ({ email, vCode }) => {
     const subject = "Confirm Email";
     console.log(initApp_1.BaseUrl);
-    const link = `https://clothingapp-production-681d.up.railway.app/api/v1/auth/confirmEmail/${vCode}`;
+    const link = `${process.env.MOOD == "production" ?
+        "https://clothingapp-production-681d.up.railway.app"
+        : "http://localhost:3050"}/api/v1/auth/confirmEmail/${vCode}`;
     console.log({ link });
     const html = (0, templeteEmail_1.default)(link);
     const info = await (0, sendEmail_1.sendEmail)({ to: email, subject, html });

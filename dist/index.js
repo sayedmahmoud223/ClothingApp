@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 require("./utils/confirmEmailCodeRefactor");
+// import "./modules/asAdmin/catogry/handleCategoryImage"
 const initApp_1 = require("./initApp/initApp");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
