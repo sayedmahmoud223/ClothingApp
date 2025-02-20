@@ -58,17 +58,17 @@ let productSchema = new mongoose_1.Schema({
 // productSchema.pre(['find', 'findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
 //     this.where({ isDeleted: false })
 // })
-productSchema.pre(['find', 'findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function (next) {
-    this.populate([
-        {
-            path: "variants",
-        },
-        {
-            path: "category",
-        }
-    ]);
-    next();
-});
+// productSchema.pre(['find', 'findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function (next) {
+//     this.populate([
+//         {
+//             path: "variants",
+//         },
+//         {
+//             path: "category",
+//         }
+//     ])
+//     next()
+// })
 // productSchema.virtual("colors").get(function () {
 //     const colors: string[] = []
 //     this.variants?.forEach(variant => {
