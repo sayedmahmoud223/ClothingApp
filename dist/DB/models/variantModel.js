@@ -33,20 +33,16 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.variantModel = exports.variantSchema = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-const categorySchema = new mongoose_1.Schema({
-    name: { type: String, required: true, unique: true },
-    image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
-    createdBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: false },
-    updatedBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: false },
-    subcategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Subcategory" }]
-}, {
-    timestamps: true,
-    toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+exports.variantSchema = new mongoose_1.Schema({
+    productId: { type: mongoose_1.Types.ObjectId, ref: "Product" },
+    colorName: { type: String, required: true },
+    // enum: ['Black', 'Gray', 'White', 'Brown', 'Beige', 'Red', 'Pink', 'Orange', 'Yellow', 'Ivory', 'Green', 'Blue', 'Purple', 'Gold', 'Silver', 'Multi'], required: true },
+    avaliable: [{
+            size: { type: String, enum: ['XS', 'S', 'M', 'L', 'XL', '2XL'], required: true },
+            stock: Number
+        }],
+    subImages: [{ secure_url: String, public_id: String }]
 });
-// categorySchema.pre(['findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
-//     this.where({ isDeleted: false });
-// });
-const categoryModel = mongoose_1.default.models.Category || (0, mongoose_1.model)("Category", categorySchema);
-exports.default = categoryModel;
+exports.variantModel = (0, mongoose_1.model)("Variant", exports.variantSchema) || mongoose_1.default.models.Variant;

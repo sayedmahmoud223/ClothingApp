@@ -1,26 +1,52 @@
 import mongoose, { Schema, Types, model } from "mongoose"
 
 
-let productSchema = new Schema({
-    ProductName: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'], max: [30, 'max length 2 char'] },
+export interface IProduct extends Document {
+    productName: string
+    description: string
+    slug: string
+    category?: Types.ObjectId
+    subcategory?: Types.ObjectId
+    costPrice: number
+    soldPrice: number
+    discount: number
+    finalPrice: number
+    mainImage: Record<string, string>
+    smallImage: Record<string, string>
+    mainColor: string
+    variants: Types.ObjectId[]
+    createdBy?:Types.ObjectId
+    updatedBy?:Types.ObjectId
+    isDeleted: Boolean
+}
+
+const productSchema = new Schema<IProduct>({
+    productName: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'], max: [30, 'max length 2 char'] },
     description: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'] },
-    slug: { type: String, required: false },
-    category: { type: Types.ObjectId, ref: "Category",/* required: true*/ },
+    category: { type: Types.ObjectId, ref: "Category", required: true },
+    subcategory: { type: Types.ObjectId, ref: "Subcategory", required: true },
     costPrice: { type: Number, required: true, default: 0 },
     soldPrice: { type: Number, required: [true, 'price is required'], default: 0 },
     discount: { type: Number, default: 0 },
     finalPrice: { type: Number, required: true, default: 0 },
-    mainImage: { type: Object, required: true },
+    mainImage: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
+    smallImage: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     mainColor: { type: String, required: true },
     // enum: ['Black', 'Gray', 'White', 'Brown', 'Beige', 'Red', 'Pink', 'Orange', 'Yellow', 'Ivory', 'Green', 'Blue', 'Purple', 'Gold', 'Silver', 'Multi'],
     variants: [{ type: Types.ObjectId, ref: "Variant" }],
-    customId: { type: String, required: true },
+    createdBy: { type: Types.ObjectId, ref: "User", requierd: true },
+    updatedBy: { type: Types.ObjectId, ref: "User", requierd: true },
     isDeleted: { type: Boolean, default: false },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 })
+
+productSchema.index({ productName: 1 }, { unique: true });  // Prevent duplicate product names
+productSchema.index({ soldPrice: 1 });  // Price-based filtering
+productSchema.index({ description: "text" });  // Full-text search
+productSchema.index({ mainCiolor: 1 });  // Full-text search
 
 // productSchema.pre(['find', 'findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
 //     this.where({ isDeleted: false })
@@ -75,6 +101,8 @@ let productSchema = new Schema({
 // })
 
 
+
+
 export const productModel = mongoose.models.Product || model("Product", productSchema)
 
 
@@ -104,3 +132,35 @@ export const productModel = mongoose.models.Product || model("Product", productS
 // //                     timestamps: true
 // //                 }
 // //             )
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// export let variantSchema = new Schema({
+//     productId: { type: Types.ObjectId, ref: "Product" },
+//     colorName: { type: String, enum: ['Black', 'Gray', 'White', 'Brown', 'Beige', 'Red', 'Pink', 'Orange', 'Yellow', 'Ivory', 'Green', 'Blue', 'Purple', 'Gold', 'Silver', 'Multi'], required: true },
+//     avalible: [{
+//         size: { type: String, enum: ['XS', 'S', 'M', 'L', 'XL', '2XL'], required: true },
+//         stock: Number,
+//     }],
+//     subImages: { type: [Object] },
+//     imageColor: {
+//         colorName: "",
+//         image: ""
+//     }
+// })
+
+// export let varinatModel = model("Variant", variantSchema) || mongoose.models.Variant  

@@ -18,7 +18,7 @@ class GoogleAuthService {
             const tokenResponse = await axios.post("https://oauth2.googleapis.com/token", {
                 client_id: process.env.clientID,
                 client_secret: process.env.clientSecret,
-                redirect_uri: process.env.LOCAL_REDIRECT_URI,
+                redirect_uri: process.env.env == "DEV" ? process.env.LOCAL_REDIRECT_URI : process.env.REDIRECT_URI,
                 grant_type: "authorization_code",
                 code,
             });

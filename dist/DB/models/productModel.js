@@ -35,26 +35,32 @@ var __importStar = (this && this.__importStar) || (function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productModel = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
-let productSchema = new mongoose_1.Schema({
-    ProductName: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'], max: [30, 'max length 2 char'] },
+const productSchema = new mongoose_1.Schema({
+    productName: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'], max: [30, 'max length 2 char'] },
     description: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'] },
-    slug: { type: String, required: false },
-    category: { type: mongoose_1.Types.ObjectId, ref: "Category", /* required: true*/ },
+    category: { type: mongoose_1.Types.ObjectId, ref: "Category", required: true },
+    subcategory: { type: mongoose_1.Types.ObjectId, ref: "Subcategory", required: true },
     costPrice: { type: Number, required: true, default: 0 },
     soldPrice: { type: Number, required: [true, 'price is required'], default: 0 },
     discount: { type: Number, default: 0 },
     finalPrice: { type: Number, required: true, default: 0 },
-    mainImage: { type: Object, required: true },
+    mainImage: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
+    smallImage: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     mainColor: { type: String, required: true },
     // enum: ['Black', 'Gray', 'White', 'Brown', 'Beige', 'Red', 'Pink', 'Orange', 'Yellow', 'Ivory', 'Green', 'Blue', 'Purple', 'Gold', 'Silver', 'Multi'],
     variants: [{ type: mongoose_1.Types.ObjectId, ref: "Variant" }],
-    customId: { type: String, required: true },
+    createdBy: { type: mongoose_1.Types.ObjectId, ref: "User", requierd: true },
+    updatedBy: { type: mongoose_1.Types.ObjectId, ref: "User", requierd: true },
     isDeleted: { type: Boolean, default: false },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
+productSchema.index({ productName: 1 }, { unique: true }); // Prevent duplicate product names
+productSchema.index({ soldPrice: 1 }); // Price-based filtering
+productSchema.index({ description: "text" }); // Full-text search
+productSchema.index({ mainCiolor: 1 }); // Full-text search
 // productSchema.pre(['find', 'findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
 //     this.where({ isDeleted: false })
 // })
@@ -117,3 +123,17 @@ exports.productModel = mongoose_1.default.models.Product || (0, mongoose_1.model
 // //                     timestamps: true
 // //                 }
 // //             )
+// export let variantSchema = new Schema({
+//     productId: { type: Types.ObjectId, ref: "Product" },
+//     colorName: { type: String, enum: ['Black', 'Gray', 'White', 'Brown', 'Beige', 'Red', 'Pink', 'Orange', 'Yellow', 'Ivory', 'Green', 'Blue', 'Purple', 'Gold', 'Silver', 'Multi'], required: true },
+//     avalible: [{
+//         size: { type: String, enum: ['XS', 'S', 'M', 'L', 'XL', '2XL'], required: true },
+//         stock: Number,
+//     }],
+//     subImages: { type: [Object] },
+//     imageColor: {
+//         colorName: "",
+//         image: ""
+//     }
+// })
+// export let varinatModel = model("Variant", variantSchema) || mongoose.models.Variant  

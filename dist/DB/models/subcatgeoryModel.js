@@ -34,19 +34,19 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const categorySchema = new mongoose_1.Schema({
+const subcategorySchema = new mongoose_1.Schema({
     name: { type: String, required: true, unique: true },
     image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
-    createdBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: false },
+    createdBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: false },
-    subcategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Subcategory" }]
+    category: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category", required: true }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
-// categorySchema.pre(['findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
+// subcategorySchema.pre(['findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
 //     this.where({ isDeleted: false });
 // });
-const categoryModel = mongoose_1.default.models.Category || (0, mongoose_1.model)("Category", categorySchema);
-exports.default = categoryModel;
+const subcategoryModel = mongoose_1.default.models.Subcategory || (0, mongoose_1.model)("Subcategory", subcategorySchema);
+exports.default = subcategoryModel;

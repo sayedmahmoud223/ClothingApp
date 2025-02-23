@@ -5,57 +5,76 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.productAdminService = void 0;
 const productModel_1 = require("../../../DB/models/productModel");
+const subcatgeoryModel_1 = __importDefault(require("../../../DB/models/subcatgeoryModel"));
 const errorHandling_1 = require("../../../utils/errorHandling");
-// import { ICreateproduct } from "./IProductAdmin";
-const cloudinary_1 = __importDefault(require("../../../utils/cloudinary"));
+const catogryAdminService_1 = require("../catogry/catogryAdminService");
+const productImageUpload_1 = require("./productImageUpload");
 class ProductAdminService {
-    async productExist(name) {
-        if (await productModel_1.productModel.findOne({ name }))
-            throw new errorHandling_1.ResError("catogry is already exist", 400);
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    async productExist(_id) {
+        if (await productModel_1.productModel.findById(_id))
+            throw new errorHandling_1.ResError("product is already exist", 400);
     }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
     async productNotExist(productId) {
-        const product = await productModel_1.productModel.findOne({ _id: productId });
+        const product = await productModel_1.productModel.findById({ _id: productId }).populate("category subcategory");
         if (!product)
-            throw new errorHandling_1.ResError("catogry is not found", 400);
+            throw new errorHandling_1.ResError("product not found", 400);
         return product;
     }
-    async create(reqBody, reqFile) {
+    //////////////////////////////////////////////////////////////////////////////////////////////////
+    async readAll() {
+        const data = await productModel_1.productModel.find().populate("category subcategory");
+        return data;
     }
-    async updateOne(productId, name, path) {
-        const product = await this.productNotExist(productId);
-        console.log({ product });
-        if (name && name !== product.name) {
-            const oldFolder = `clothing/product/${product.name}`;
-            const newFolder = `clothing/product/${name}`;
-            // Rename the single image to move it to the new folder
-            const newImagePublicId = newFolder + '/' + product.image.public_id.split('/').pop();
-            await cloudinary_1.default.uploader.rename(product.image.public_id, newImagePublicId);
-            product.image.public_id = newImagePublicId;
-            product.image.secure_url = product.image.secure_url.replace(product.name, name);
-            // Delete the old folder (optional, Cloudinary auto-deletes empty folders)
-            await cloudinary_1.default.api.delete_folder(oldFolder).catch(() => {
-                console.log(`Old folder "${oldFolder}" was already empty or does not exist.`);
-            });
-            // Update product name in DB
-            product.name = name;
-        }
-        if (path) {
-            await cloudinary_1.default.uploader.destroy(product.image.public_id);
-            console.log({ productName: product.name });
-            const { secure_url, public_id } = await cloudinary_1.default.uploader.upload(path, { folder: `clothing/product/${product.name}` });
-            product.image.secure_url = secure_url;
-            product.image.public_id = public_id;
-        }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    async create(reqBody, buffer, userData) {
+        const { productName, description, categoryName, subcategoryName, costPrice, soldPrice, discount, mainColor } = reqBody;
+        // find category
+        const category = await catogryAdminService_1.categoryAdminService.findCategoryWithName(categoryName);
+        // find subcategory
+        const subcategory = await subcatgeoryModel_1.default.findOne({ name: subcategoryName, category: category._id });
+        if (!subcategory)
+            throw new errorHandling_1.ResError("subcategory not found", 400);
+        // create Product
+        const product = new productModel_1.productModel({ productName, description, costPrice, soldPrice, mainColor, category: category._id, subcategory: subcategory._id });
+        // handle product final price
+        product.finalPrice = soldPrice - (soldPrice * ((discount || 0) / 100));
+        // get images urls from uploadCreateProduct
+        const { secure_urlForMain, public_idForMain, secure_urlForSmall, public_idForSmall } = await (0, productImageUpload_1.uploadCreateProduct)(category, subcategory, product, buffer);
+        product.mainImage.public_id = public_idForMain;
+        product.mainImage.secure_url = secure_urlForMain;
+        product.smallImage.public_id = public_idForSmall;
+        product.smallImage.secure_url = secure_urlForSmall;
+        product.createdBy = userData._id;
         await product.save();
         return product;
     }
-    async deleteOne(productId) {
-        const product = await productModel_1.productModel.findByIdAndDelete(productId);
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    async updateOne(productId, reqBody, buffer, userData) {
+        const product = await this.productNotExist(productId);
+        product.set(reqBody);
         console.log({ product });
-        if (!product)
-            throw new errorHandling_1.ResError("catogry not found", 400);
-        await cloudinary_1.default.uploader.destroy(product.image.public_id);
-        await cloudinary_1.default.api.delete_folder(`clothing/product/${product.name}`);
+        const { discount, soldPrice } = reqBody;
+        discount || soldPrice ? product.finalPrice =
+            (soldPrice || product.soldPrice) - (((discount || product.discount) / 100) * (soldPrice || product.soldPrice))
+            : product.finalPrice;
+        if (buffer) {
+            console.log({ buffer });
+            const { secure_urlForMain, public_idForMain, secure_urlForSmall, public_idForSmall } = await (0, productImageUpload_1.uploadUpdateProduct)(product, buffer);
+            product.mainImage.public_id = public_idForMain;
+            product.mainImage.secure_url = secure_urlForMain;
+            product.smallImage.public_id = public_idForSmall;
+            product.smallImage.secure_url = secure_urlForSmall;
+        }
+        product.updatedBy = userData._id;
+        await product.save();
+        return product;
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////////
+    async deleteOne(productId, isDeleted, userData) {
+        const product = await productModel_1.productModel.findByIdAndUpdate({ _id: productId }, { isDeleted }, { new: true });
+        product.updateBy = userData._id;
         return product;
     }
 }

@@ -32,20 +32,15 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const productAdminController_1 = require("./productAdminController");
+const subcatogryAdminController_1 = require("./subcatogryAdminController");
 const errorHandling_1 = require("../../../utils/errorHandling");
 const multer_1 = require("../../../utils/multer");
 const authMiddleware_1 = __importStar(require("../../../middlewares/authMiddleware"));
-const variantsAdminRouter_1 = __importDefault(require("../productVariants/variantsAdminRouter"));
 const router = (0, express_1.Router)({ mergeParams: true });
-router.use("/:productId/variant", variantsAdminRouter_1.default);
-router.get("/read_all", (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.readAll));
-router.post("/create", (0, authMiddleware_1.default)(authMiddleware_1.Roles.Admin), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("subImages"), (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.create));
-router.patch("/update-one/:productId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.updateOne));
-router.delete("/delete-one/:productId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.deleteOne));
+// router.get("/read_all", asyncHandler(subcategoryAdminController.readAll))
+router.post("/", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, authMiddleware_1.default)(authMiddleware_1.Roles.Admin), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(subcatogryAdminController_1.subcategoryAdminController.create));
+router.patch("/:subcategoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(subcatogryAdminController_1.subcategoryAdminController.updateOne));
+router.delete("/:subcategoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(subcatogryAdminController_1.subcategoryAdminController.deleteOne));
 exports.default = router;

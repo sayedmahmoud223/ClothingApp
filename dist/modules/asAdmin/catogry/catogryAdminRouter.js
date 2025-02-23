@@ -32,13 +32,18 @@ var __importStar = (this && this.__importStar) || (function () {
         return result;
     };
 })();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const catogryAdminController_1 = require("./catogryAdminController");
 const errorHandling_1 = require("../../../utils/errorHandling");
 const multer_1 = require("../../../utils/multer");
 const authMiddleware_1 = __importStar(require("../../../middlewares/authMiddleware"));
+const subcatogryAdminRouter_1 = __importDefault(require("../subcategory/subcatogryAdminRouter"));
 const router = (0, express_1.Router)();
+router.use("/:categoryId/subcategory", subcatogryAdminRouter_1.default);
 router.get("/read_all", (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.readAll));
 router.post("/create", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.create));
 router.delete("/delete_one/:categoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.deleteOne));

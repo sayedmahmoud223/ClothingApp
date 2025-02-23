@@ -16,7 +16,13 @@ class CategoryAdminService {
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async categoryNotExist(categoryId) {
-        const category = await catgeoryModel_1.default.findOne({ _id: categoryId });
+        const category = await catgeoryModel_1.default.findById({ _id: categoryId });
+        if (!category)
+            throw new errorHandling_1.ResError("catogry is not found", 400);
+        return category;
+    }
+    async findCategoryWithName(categoryName) {
+        const category = await catgeoryModel_1.default.findOne({ name: categoryName });
         if (!category)
             throw new errorHandling_1.ResError("catogry is not found", 400);
         return category;
@@ -57,10 +63,14 @@ class CategoryAdminService {
             const oldFolder = `clothing/category/${category.name}`;
             const newFolder = `clothing/category/${name}`;
             // Rename the single image to move it to the new folder
+            console.log("Hello");
             const newImagePublicId = newFolder + '/' + category.image.public_id.split('/').pop();
+            console.log({ newImagePublicId });
             await cloudinary_1.default.uploader.rename(category.image.public_id, newImagePublicId);
+            console.log("Hello");
             category.image.public_id = newImagePublicId;
             category.image.secure_url = category.image.secure_url.replace(category.name, name);
+            console.log("Hello");
             // Delete the old folder (optional, Cloudinary auto-deletes empty folders)
             await cloudinary_1.default.api.delete_folder(oldFolder).catch(() => {
                 console.log(`Old folder "${oldFolder}" was already empty or does not exist.`);
