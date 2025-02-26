@@ -20,13 +20,13 @@ class AuthController {
         res.cookie("access_token", token, {
             httpOnly: true,
             secure: false,
-            sameSite: "none",
+            sameSite: "lax",
             maxAge: 15 * 60 * 1000
         })
         res.cookie("rerfresh-token", refresh_token, {
             httpOnly: true,
             secure: false,
-            sameSite: "none",
+            sameSite: "lax",
             maxAge: 7 * 24 * 60 * 60 * 1000
         })
         return res.status(200).json({ success: true, message: "Success", data: { _id: user._id, userName: user.userName, email: user.email, role: user.role } });

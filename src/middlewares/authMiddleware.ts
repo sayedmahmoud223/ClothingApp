@@ -11,6 +11,7 @@ const Auth = (AccessRoles: string[] | string = []) => {
     return asyncHandler(async (req: any, res: any, next: any) => {
         // Correct way to get token from cookies
         const { access_token } = req.cookies;
+        console.log({access_token});
         // console.log({ cookie: req.cookies });
         if (!access_token) return next(new ResError("Access token is missing", 400));
 

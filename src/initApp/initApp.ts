@@ -11,7 +11,9 @@ export const initApp = async (app: any, express: any) => {
     await connectDB()
     app.use(cors({
         origin: ["http://localhost:4200","https://dashboard-gules-seven.vercel.app"],
-        credentials: true
+        credentials: true,
+        methods: ["GET", "POST", "PUT", "DELETE"], // تأكد من السماح بالطرق المستخدمة
+        allowedHeaders: ["Content-Type", "Authorization"], // السماح بالرؤوس المهمة
     }))
     app.use(cookieParser())
     app.use(express.json())
