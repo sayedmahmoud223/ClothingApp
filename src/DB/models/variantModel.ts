@@ -6,7 +6,8 @@ export interface IVariant {
     productId?: Types.ObjectId
     colorName: string
     avaliable: IAvailable[]
-    subImages: ISubImages[]
+    subImages: ISubImages[],
+    isDeleted: boolean
 }
 
 
@@ -19,7 +20,8 @@ export let variantSchema = new Schema<IVariant>({
         size: { type: String, enum: ['XS', 'S', 'M', 'L', 'XL', '2XL'], required: true },
         stock: Number
     }],
-    subImages: [{ secure_url: String, public_id: String }]
+    subImages: [{ secure_url: String, public_id: String }],
+    isDeleted: { type: Boolean, default: false }
 })
 
 export const variantModel = model("Variant", variantSchema) || mongoose.models.Variant  

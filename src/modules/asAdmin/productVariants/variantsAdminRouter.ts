@@ -26,7 +26,7 @@ router.patch("/:variantId/delete-avliable",
     asyncHandler(variantAdminController.deleteOneFromAvaliable))
 
 
-router.delete("/:subcategoryId",
+router.delete("/:variantId/delete-variant",
     Auth([Roles.Admin]),
     asyncHandler(variantAdminController.deleteOne))
 

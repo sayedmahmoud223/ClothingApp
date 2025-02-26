@@ -32,7 +32,8 @@ class VariantAdminController {
         return res.status(200).json({ Success: true, message: "Success", data });
     }
     async deleteOne(req, res, next) {
-        const data = await variantsAdminService_1.variantAdminService.deleteOne();
+        const { productId, variantId } = req.params;
+        const data = await variantsAdminService_1.variantAdminService.deleteOne({ productId, variantId });
         return res.status(200).json({ Success: true, message: "Success", data });
     }
 }

@@ -69,7 +69,14 @@ class VariantAdminService {
         return variant;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async deleteOne() {
+    async deleteOne(reqParams) {
+        const { productId, variantId } = reqParams;
+        await productAdminService_1.productAdminService.productNotExist(productId);
+        const variant = await this.variantNotExist(variantId, productId);
+        const updateVariant = await variantModel_1.variantModel
+            .findOneAndUpdate({ _id: variantId, productId }, { isDeleted: true }, { new: true });
+        console.log({ updateVariant });
+        return variant;
     }
 }
 exports.variantAdminService = new VariantAdminService();

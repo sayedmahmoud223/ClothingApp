@@ -44,5 +44,5 @@ router.post("/", (0, authMiddleware_1.default)(authMiddleware_1.Roles.Admin), (0
 router.patch("/:variantId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).array("subImages", 4), (0, errorHandling_1.asyncHandler)(variantsAdminController_1.variantAdminController.updateOne));
 router.post("/:variantId/add-avliable", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(variantsAdminController_1.variantAdminController.addAvaliableToVariant));
 router.patch("/:variantId/delete-avliable", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(variantsAdminController_1.variantAdminController.deleteOneFromAvaliable));
-router.delete("/:subcategoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(variantsAdminController_1.variantAdminController.deleteOne));
+router.delete("/:variantId/delete-variant", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(variantsAdminController_1.variantAdminController.deleteOne));
 exports.default = router;

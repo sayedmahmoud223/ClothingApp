@@ -43,6 +43,7 @@ exports.variantSchema = new mongoose_1.Schema({
             size: { type: String, enum: ['XS', 'S', 'M', 'L', 'XL', '2XL'], required: true },
             stock: Number
         }],
-    subImages: [{ secure_url: String, public_id: String }]
+    subImages: [{ secure_url: String, public_id: String }],
+    isDeleted: { type: Boolean, default: false }
 });
 exports.variantModel = (0, mongoose_1.model)("Variant", exports.variantSchema) || mongoose_1.default.models.Variant;

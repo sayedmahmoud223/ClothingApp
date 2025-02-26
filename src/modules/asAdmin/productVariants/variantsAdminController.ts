@@ -28,7 +28,6 @@ class VariantAdminController {
     async addAvaliableToVariant(req: Request, res: Response, next: NextFunction) {
         const { productId, variantId } = req.params
         const { avaliable } = req.body
-
         const data = await variantAdminService.addAvaliableToVariant({ productId, variantId }, avaliable)
         return res.status(200).json({ Success: true, message: "Success", data })
     }
@@ -41,7 +40,8 @@ class VariantAdminController {
     }
 
     async deleteOne(req: Request, res: Response, next: NextFunction) {
-        const data = await variantAdminService.deleteOne()
+        const { productId, variantId } = req.params
+        const data = await variantAdminService.deleteOne({ productId, variantId })
         return res.status(200).json({ Success: true, message: "Success", data })
     }
 

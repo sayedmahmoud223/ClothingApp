@@ -63,13 +63,20 @@ class VariantAdminService {
         await productAdminService.productNotExist(productId)
         const variant = await this.variantNotExist(variantId, productId)
         const updateVariant = await variantModel
-        .findOneAndUpdate({ _id: variantId, productId }, { $pull: { avaliable: { _id: avaliableId } } }, { new: true })
+            .findOneAndUpdate({ _id: variantId, productId }, { $pull: { avaliable: { _id: avaliableId } } }, { new: true })
         console.log({ updateVariant });
         await variant.save()
         return variant
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async deleteOne() {
+    async deleteOne(reqParams: IParams) {
+        const { productId, variantId } = reqParams
+        await productAdminService.productNotExist(productId)
+        const variant = await this.variantNotExist(variantId, productId)
+        const updateVariant = await variantModel
+            .findOneAndUpdate({ _id: variantId, productId }, { isDeleted: true }, { new: true })
+        console.log({ updateVariant });
+        return variant
 
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
