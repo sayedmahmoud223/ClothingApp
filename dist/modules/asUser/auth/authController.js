@@ -15,13 +15,13 @@ class AuthController {
         const { user, token, refresh_token } = await authService_1.authService.login(req.body, next);
         res.cookie("access_token", token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "none",
             maxAge: 15 * 60 * 1000
         });
         res.cookie("rerfresh-token", refresh_token, {
             httpOnly: true,
-            secure: true,
+            secure: false,
             sameSite: "none",
             maxAge: 7 * 24 * 60 * 60 * 1000
         });
