@@ -14,6 +14,7 @@ exports.Roles = {
 const Auth = (AccessRoles = []) => {
     return (0, errorHandling_1.asyncHandler)(async (req, res, next) => {
         // Correct way to get token from cookies
+        console.log(req.cookies.access_token);
         const { access_token } = req.cookies;
         console.log({ access_token });
         // console.log({ cookie: req.cookies });
