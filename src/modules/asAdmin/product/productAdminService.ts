@@ -1,6 +1,7 @@
 import { productModel } from "../../../DB/models/productModel";
 import subcategoryModel from "../../../DB/models/subcatgeoryModel";
 import { tokenPayload } from "../../../type";
+import { ApiFeature } from "../../../utils/apiFeatures";
 import { ResError } from "../../../utils/errorHandling";
 import { categoryAdminService } from "../catogry/catogryAdminService";
 import { IProductBody } from "./IProductAdmin";
@@ -19,9 +20,11 @@ class ProductAdminService {
         return product
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
-    async readAll() {
-        const data = await productModel.find().populate("category subcategory")
-        return data
+    async readAll(reqParams: any) {
+        const readAll = new ApiFeature(productModel.find({}), reqParams.query).paginate().filter().search().sort();
+        const data = await readAll.mongooseQuery.populate("category subcategory")
+        const allCount = await productModel.countDocuments()
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     async create(reqBody: IProductBody, buffer: string, userData: tokenPayload) {

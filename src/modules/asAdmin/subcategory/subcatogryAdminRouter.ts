@@ -5,7 +5,7 @@ import { fileType, fileUploud } from "../../../utils/multer";
 import Auth, { Roles } from "../../../middlewares/authMiddleware";
 const router = Router({ mergeParams: true })
 
-// router.get("/read_all", asyncHandler(subcategoryAdminController.readAll))
+router.get("/read_all", asyncHandler(subcategoryAdminController.readAll))
 router.post("/", Auth([Roles.Admin]),
     Auth(Roles.Admin),
     fileUploud(fileType.imageTypes).single("image"),

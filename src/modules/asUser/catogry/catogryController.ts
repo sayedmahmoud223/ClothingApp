@@ -7,8 +7,8 @@ import { categoryService } from "./catogryService";
 
 export class CategoryController {
     async readAll(req: Request, res: Response, next: NextFunction) {
-        const data = await categoryService.readAll(req)
-        return res.status(200).json({ success: true, message: "Success", data });
+        const { data, allCount, currentPage, size } = await categoryService.readAll(req)
+        return res.status(200).json({ success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data });
     }
 }
 

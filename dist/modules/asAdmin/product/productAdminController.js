@@ -5,8 +5,8 @@ const productAdminService_1 = require("./productAdminService");
 const errorHandling_1 = require("../../../utils/errorHandling");
 class ProductAdminController {
     async readAll(req, res, next) {
-        const data = await productAdminService_1.productAdminService.readAll();
-        return res.status(200).json({ Success: true, message: "Success", data });
+        const { data, allCount, currentPage, size } = await productAdminService_1.productAdminService.readAll(req);
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data });
     }
     async create(req, res, next) {
         if (!req.decoded) {

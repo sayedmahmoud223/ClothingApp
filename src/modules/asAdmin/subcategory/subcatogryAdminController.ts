@@ -6,11 +6,10 @@ import { ResError } from "../../../utils/errorHandling";
 
 class SubCategoryAdminController {
 
-    // async readAll(req: Request, res: Response, next: NextFunction) {
-    //     const data = await subcategoryController.readAll(req, res, next)
-    //     return res.status(200).json({ Success: true, message: "Success", data })
-    // }
-
+    async readAll(req: Request, res: Response, next: NextFunction) {
+        const { data, allCount, currentPage, size } = await subcategoryAdminService.readAll(req)
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data })
+    }
     async create(req: Request, res: Response, next: NextFunction) {
         if (!req.decoded) return next(new ResError("userData not found", 400))
         if (!req.file) return next(new ResError("enter subcategory image", 400))

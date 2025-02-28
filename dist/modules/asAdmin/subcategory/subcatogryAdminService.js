@@ -9,6 +9,7 @@ const cloudinary_1 = __importDefault(require("../../../utils/cloudinary"));
 const catogryAdminService_1 = require("../catogry/catogryAdminService");
 const subcatgeoryModel_1 = __importDefault(require("../../../DB/models/subcatgeoryModel"));
 const uploadSubcategoryImages_1 = require("./uploadSubcategoryImages");
+const apiFeatures_1 = require("../../../utils/apiFeatures");
 class SubcategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async subcategoryExist(name) {
@@ -21,6 +22,13 @@ class SubcategoryAdminService {
         if (!subcategory)
             throw new errorHandling_1.ResError("subcatogry not found", 400);
         return subcategory;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    async readAll(reqParams) {
+        const readAll = new apiFeatures_1.ApiFeature(subcatgeoryModel_1.default.find({}), reqParams.query).paginate().filter().search().sort();
+        const data = await readAll.mongooseQuery;
+        const allCount = await subcatgeoryModel_1.default.countDocuments();
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size };
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async create(name, categoryId, buffer, userData) {

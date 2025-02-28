@@ -4,8 +4,8 @@ exports.categoryController = exports.CategoryController = void 0;
 const catogryService_1 = require("./catogryService");
 class CategoryController {
     async readAll(req, res, next) {
-        const data = await catogryService_1.categoryService.readAll(req);
-        return res.status(200).json({ success: true, message: "Success", data });
+        const { data, allCount, currentPage, size } = await catogryService_1.categoryService.readAll(req);
+        return res.status(200).json({ success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data });
     }
 }
 exports.CategoryController = CategoryController;

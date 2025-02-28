@@ -10,7 +10,8 @@ class CategoryService {
     async readAll(reqParams) {
         const readAll = new apiFeatures_1.ApiFeature(catgeoryModel_1.default.find({}), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery;
-        return data;
+        const allCount = await catgeoryModel_1.default.countDocuments();
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size };
     }
     async readOne() {
     }

@@ -9,10 +9,14 @@ class ApiFeature {
         this.queryData = queryData;
     }
     paginate() {
+        console.log({ query: this.queryData });
         let { page, size } = this.queryData;
         page = Number(page) > 0 ? Number(page) : 1;
-        size = Number(size) > 0 ? Number(size) : 30;
+        size = Number(size) > 0 ? Number(size) : 10;
+        this.queryData.page = page; // Store the corrected values
+        this.queryData.size = size;
         const skip = (page - 1) * size;
+        console.log({ skip });
         this.mongooseQuery.limit(size).skip(skip);
         return this;
     }
@@ -29,10 +33,9 @@ class ApiFeature {
             this.mongooseQuery.find({
                 $or: [
                     { ProductName: { $regex: this.queryData.search, $options: "i" } },
+                    { name: { $regex: this.queryData.search, $options: "i" } },
                     { description: { $regex: this.queryData.search, $options: "i" } },
-                    { productType: { $regex: this.queryData.search, $options: "i" } },
                     { size: { $regex: this.queryData.search, $options: "i" } },
-                    { productSeasonType: { $regex: this.queryData.search, $options: "i" } }
                 ]
             });
         }

@@ -39,7 +39,7 @@ const errorHandling_1 = require("../../../utils/errorHandling");
 const multer_1 = require("../../../utils/multer");
 const authMiddleware_1 = __importStar(require("../../../middlewares/authMiddleware"));
 const router = (0, express_1.Router)({ mergeParams: true });
-// router.get("/read_all", asyncHandler(subcategoryAdminController.readAll))
+router.get("/read_all", (0, errorHandling_1.asyncHandler)(subcatogryAdminController_1.subcategoryAdminController.readAll));
 router.post("/", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, authMiddleware_1.default)(authMiddleware_1.Roles.Admin), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(subcatogryAdminController_1.subcategoryAdminController.create));
 router.patch("/:subcategoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(subcatogryAdminController_1.subcategoryAdminController.updateOne));
 router.delete("/:subcategoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(subcatogryAdminController_1.subcategoryAdminController.deleteOne));

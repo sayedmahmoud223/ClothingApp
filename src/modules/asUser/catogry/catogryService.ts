@@ -5,7 +5,8 @@ class CategoryService {
     async readAll(reqParams: any) {
         const readAll = new ApiFeature(categoryModel.find({}), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery
-        return data
+        const allCount = await categoryModel.countDocuments()
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size }
     }
     async readOne() {
 

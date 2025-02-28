@@ -4,10 +4,10 @@ exports.subcategoryAdminController = void 0;
 const subcatogryAdminService_1 = require("./subcatogryAdminService");
 const errorHandling_1 = require("../../../utils/errorHandling");
 class SubCategoryAdminController {
-    // async readAll(req: Request, res: Response, next: NextFunction) {
-    //     const data = await subcategoryController.readAll(req, res, next)
-    //     return res.status(200).json({ Success: true, message: "Success", data })
-    // }
+    async readAll(req, res, next) {
+        const { data, allCount, currentPage, size } = await subcatogryAdminService_1.subcategoryAdminService.readAll(req);
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data });
+    }
     async create(req, res, next) {
         if (!req.decoded)
             return next(new errorHandling_1.ResError("userData not found", 400));

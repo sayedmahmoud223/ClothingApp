@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.productAdminService = void 0;
 const productModel_1 = require("../../../DB/models/productModel");
 const subcatgeoryModel_1 = __importDefault(require("../../../DB/models/subcatgeoryModel"));
+const apiFeatures_1 = require("../../../utils/apiFeatures");
 const errorHandling_1 = require("../../../utils/errorHandling");
 const catogryAdminService_1 = require("../catogry/catogryAdminService");
 const productImageUpload_1 = require("./productImageUpload");
@@ -23,9 +24,11 @@ class ProductAdminService {
         return product;
     }
     //////////////////////////////////////////////////////////////////////////////////////////////////
-    async readAll() {
-        const data = await productModel_1.productModel.find().populate("category subcategory");
-        return data;
+    async readAll(reqParams) {
+        const readAll = new apiFeatures_1.ApiFeature(productModel_1.productModel.find({}), reqParams.query).paginate().filter().search().sort();
+        const data = await readAll.mongooseQuery.populate("category subcategory");
+        const allCount = await productModel_1.productModel.countDocuments();
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size };
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     async create(reqBody, buffer, userData) {

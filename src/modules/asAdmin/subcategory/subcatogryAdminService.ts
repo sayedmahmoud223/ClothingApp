@@ -3,7 +3,8 @@ import cloudinary from "../../../utils/cloudinary"
 import { tokenPayload } from "../../../type";
 import { categoryAdminService } from "../catogry/catogryAdminService";
 import subcategoryModel from "../../../DB/models/subcatgeoryModel";
-import { uploadImageForCreateSubcategory,uploadImageForUpdateSubcategory } from "./uploadSubcategoryImages";
+import { uploadImageForCreateSubcategory, uploadImageForUpdateSubcategory } from "./uploadSubcategoryImages";
+import { ApiFeature } from "../../../utils/apiFeatures";
 
 class SubcategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,6 +16,13 @@ class SubcategoryAdminService {
         const subcategory = await subcategoryModel.findOne({ _id: subcategoryId, category: categoryId })
         if (!subcategory) throw new ResError("subcatogry not found", 400)
         return subcategory
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    async readAll(reqParams: any) {
+        const readAll = new ApiFeature(subcategoryModel.find({}), reqParams.query).paginate().filter().search().sort();
+        const data = await readAll.mongooseQuery
+        const allCount = await subcategoryModel.countDocuments()
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async create(name: string, categoryId: string, buffer: any, userData: tokenPayload) {
