@@ -35,7 +35,8 @@ class CategoryAdminController {
     }
 
     async deleteOne(req: Request, res: Response, next: NextFunction) {
-        const data = await categoryAdminService.deleteOne(req.params.categoryId)
+        const {isDeleted} = req.body
+        const data = await categoryAdminService.deleteOne(req.params.categoryId,isDeleted)
         return res.status(200).json({ Success: true, message: "Success", data })
     }
 

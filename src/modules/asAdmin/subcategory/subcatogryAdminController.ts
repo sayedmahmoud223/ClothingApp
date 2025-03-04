@@ -6,10 +6,18 @@ import { ResError } from "../../../utils/errorHandling";
 
 class SubCategoryAdminController {
 
-    async readAll(req: Request, res: Response, next: NextFunction) {
-        const { data, allCount, currentPage, size } = await subcategoryAdminService.readAll(req)
-        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data })
+    // async readAll(req: Request, res: Response, next: NextFunction) {
+    //     const { data, allCount, currentPage, size } = await subcategoryAdminService.readAll(req)
+    //     return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data })
+    // }
+    
+    async readSubcategoryForOneCategory(req: Request, res: Response, next: NextFunction) {
+        const {categoryId} = req.params
+        console.log({categoryId});
+        const { data, allCount, currentPage, size, allPages } = await subcategoryAdminService.readSubcategoryForOneCategory(req,categoryId)
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages }, data })
     }
+
     async create(req: Request, res: Response, next: NextFunction) {
         if (!req.decoded) return next(new ResError("userData not found", 400))
         if (!req.file) return next(new ResError("enter subcategory image", 400))
@@ -36,7 +44,10 @@ class SubCategoryAdminController {
     }
 
     async deleteOne(req: Request, res: Response, next: NextFunction) {
-        const data = await subcategoryAdminService.deleteOne(req.params.subcategoryId, req.params.categoryId)
+        const { isDeleted } = req.body
+        console.log({isDeleted});
+        
+        const data = await subcategoryAdminService.deleteOne(req.params.subcategoryId, req.params.categoryId, isDeleted)
         return res.status(200).json({ Success: true, message: "Success", data })
     }
 

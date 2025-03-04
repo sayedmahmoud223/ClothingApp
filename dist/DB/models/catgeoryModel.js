@@ -39,14 +39,15 @@ const categorySchema = new mongoose_1.Schema({
     image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     createdBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: false },
     updatedBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: false },
-    subcategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Subcategory" }]
+    subcategories: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "Subcategory" }],
+    isDeleted: { type: Boolean, default: false }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
-// categorySchema.pre(['findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
-//     this.where({ isDeleted: false });
-// });
+categorySchema.pre(["find", 'findOne'], function () {
+    this.where({ isDeleted: false });
+});
 const categoryModel = mongoose_1.default.models.Category || (0, mongoose_1.model)("Category", categorySchema);
 exports.default = categoryModel;

@@ -46,6 +46,6 @@ const router = (0, express_1.Router)();
 router.use("/:categoryId/subcategory", subcatogryAdminRouter_1.default);
 router.get("/read_all", (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.readAll));
 router.post("/create", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.create));
-router.delete("/delete_one/:categoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.deleteOne));
+router.patch("/delete_one/:categoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.deleteOne));
 router.patch("/update_one/:categoryId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(catogryAdminController_1.categoryAdminController.updateOne));
 exports.default = router;

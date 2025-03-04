@@ -8,6 +8,8 @@ export interface ISubcategory extends Document {
     createdBy?: Types.ObjectId;
     updatedBy?: Types.ObjectId;
     category: Types.ObjectId
+    isCategoryDeleted: Boolean
+    isDeleted: Boolean
 }
 
 const subcategorySchema = new Schema<ISubcategory>({
@@ -15,16 +17,18 @@ const subcategorySchema = new Schema<ISubcategory>({
     image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: false },
-    category: { type: Schema.Types.ObjectId, ref: "Category", required: true }
+    category: { type: Schema.Types.ObjectId, ref: "Category", required: true },
+    isCategoryDeleted: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
 
-// subcategorySchema.pre(['findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
-//     this.where({ isDeleted: false });
-// });
+subcategorySchema.pre(['find', 'findOne',"findOneAndUpdate"], function () {
+    this.where({ isDeleted: false, isCategoryDeleted: false });
+});
 
 const subcategoryModel = mongoose.models.Subcategory || model<ISubcategory>("Subcategory", subcategorySchema);
 

@@ -7,8 +7,8 @@ import { IProductFile } from "./IProductAdmin";
 
 class ProductAdminController {
     async readAll(req: Request, res: Response, next: NextFunction) {
-        const { data, allCount, currentPage, size } = await productAdminService.readAll(req)
-        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size },data })
+        const { data, allCount, currentPage, size, allPages } = await productAdminService.readAll(req)
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages },data })
     }
 
     async create(req: Request, res: Response, next: NextFunction) {

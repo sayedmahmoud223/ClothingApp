@@ -4,9 +4,15 @@ exports.subcategoryAdminController = void 0;
 const subcatogryAdminService_1 = require("./subcatogryAdminService");
 const errorHandling_1 = require("../../../utils/errorHandling");
 class SubCategoryAdminController {
-    async readAll(req, res, next) {
-        const { data, allCount, currentPage, size } = await subcatogryAdminService_1.subcategoryAdminService.readAll(req);
-        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data });
+    // async readAll(req: Request, res: Response, next: NextFunction) {
+    //     const { data, allCount, currentPage, size } = await subcategoryAdminService.readAll(req)
+    //     return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data })
+    // }
+    async readSubcategoryForOneCategory(req, res, next) {
+        const { categoryId } = req.params;
+        console.log({ categoryId });
+        const { data, allCount, currentPage, size, allPages } = await subcatogryAdminService_1.subcategoryAdminService.readSubcategoryForOneCategory(req, categoryId);
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages }, data });
     }
     async create(req, res, next) {
         if (!req.decoded)
@@ -34,7 +40,9 @@ class SubCategoryAdminController {
         return res.status(200).json({ Success: true, message: "Success", data });
     }
     async deleteOne(req, res, next) {
-        const data = await subcatogryAdminService_1.subcategoryAdminService.deleteOne(req.params.subcategoryId, req.params.categoryId);
+        const { isDeleted } = req.body;
+        console.log({ isDeleted });
+        const data = await subcatogryAdminService_1.subcategoryAdminService.deleteOne(req.params.subcategoryId, req.params.categoryId, isDeleted);
         return res.status(200).json({ Success: true, message: "Success", data });
     }
 }

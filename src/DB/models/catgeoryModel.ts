@@ -8,7 +8,8 @@ export interface ICategory extends Document {
     createdBy?: Types.ObjectId;
     updatedBy?: Types.ObjectId;
     customId?: string;
-    subcategories: Types.ObjectId[]
+    subcategories: Types.ObjectId[],
+    isDeleted: boolean
 }
 
 const categorySchema = new Schema<ICategory>({
@@ -16,16 +17,17 @@ const categorySchema = new Schema<ICategory>({
     image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     createdBy: { type: Types.ObjectId, ref: 'User', required: false },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: false },
-    subcategories: [{ type: Schema.Types.ObjectId, ref: "Subcategory" }]
+    subcategories: [{ type: Schema.Types.ObjectId, ref: "Subcategory" }],
+    isDeleted: { type: Boolean, default: false }
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
 
-// categorySchema.pre(['findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
-//     this.where({ isDeleted: false });
-// });
+categorySchema.pre(["find", 'findOne'], function () {
+    this.where({ isDeleted: false });
+});
 
 const categoryModel = mongoose.models.Category || model<ICategory>("Category", categorySchema);
 

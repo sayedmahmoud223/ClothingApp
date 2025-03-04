@@ -6,5 +6,6 @@ const errorHandling_1 = require("../../../utils/errorHandling");
 const router = (0, express_1.Router)();
 router.post("/signup", (0, errorHandling_1.asyncHandler)(authController_1.authController.signup));
 router.post("/login", (0, errorHandling_1.asyncHandler)(authController_1.authController.login));
+router.get("/refresh_token", (0, errorHandling_1.asyncHandler)(authController_1.authController.refreshToken));
 router.get("/confirmEmail/:vCode", (0, errorHandling_1.asyncHandler)(authController_1.authController.confirmEmail));
 exports.default = router;

@@ -30,7 +30,8 @@ class CategoryAdminController {
         return res.status(200).json({ Success: true, message: "Success", data });
     }
     async deleteOne(req, res, next) {
-        const data = await catogryAdminService_1.categoryAdminService.deleteOne(req.params.categoryId);
+        const { isDeleted } = req.body;
+        const data = await catogryAdminService_1.categoryAdminService.deleteOne(req.params.categoryId, isDeleted);
         return res.status(200).json({ Success: true, message: "Success", data });
     }
 }

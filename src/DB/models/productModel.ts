@@ -18,6 +18,8 @@ export interface IProduct extends Document {
     createdBy?:Types.ObjectId
     updatedBy?:Types.ObjectId
     isDeleted: Boolean
+    isCategoryDeleted:Boolean
+    isSubcategoryDeleted:Boolean
 }
 
 const productSchema = new Schema<IProduct>({
@@ -37,6 +39,8 @@ const productSchema = new Schema<IProduct>({
     createdBy: { type: Types.ObjectId, ref: "User", requierd: true },
     updatedBy: { type: Types.ObjectId, ref: "User", requierd: true },
     isDeleted: { type: Boolean, default: false },
+    isCategoryDeleted: { type: Boolean, default: false },
+    isSubcategoryDeleted: { type: Boolean, default: false },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
@@ -48,9 +52,9 @@ productSchema.index({ soldPrice: 1 });  // Price-based filtering
 productSchema.index({ description: "text" });  // Full-text search
 productSchema.index({ mainCiolor: 1 });  // Full-text search
 
-// productSchema.pre(['find', 'findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
-//     this.where({ isDeleted: false })
-// })
+productSchema.pre(['find', 'findOne',"findOneAndUpdate"], function () {
+    this.where({ isDeleted: false, isCategoryDeleted: false, isSubcategoryDeleted: false })
+})
 
 // productSchema.pre(['find', 'findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function (next) {
 //     this.populate([

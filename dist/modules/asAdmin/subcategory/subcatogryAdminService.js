@@ -10,6 +10,7 @@ const catogryAdminService_1 = require("../catogry/catogryAdminService");
 const subcatgeoryModel_1 = __importDefault(require("../../../DB/models/subcatgeoryModel"));
 const uploadSubcategoryImages_1 = require("./uploadSubcategoryImages");
 const apiFeatures_1 = require("../../../utils/apiFeatures");
+const productModel_1 = require("../../../DB/models/productModel");
 class SubcategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async subcategoryExist(name) {
@@ -24,11 +25,19 @@ class SubcategoryAdminService {
         return subcategory;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async readAll(reqParams) {
-        const readAll = new apiFeatures_1.ApiFeature(subcatgeoryModel_1.default.find({}), reqParams.query).paginate().filter().search().sort();
+    // async readAll(reqParams: any) {
+    //     const readAll = new ApiFeature(subcategoryModel.find(), reqParams.query).paginate().filter().search().sort();
+    //     const data = await readAll.mongooseQuery
+    //     const allCount = await subcategoryModel.countDocuments()
+    //     return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size }
+    // }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    async readSubcategoryForOneCategory(reqParams, categoryId) {
+        const readAll = new apiFeatures_1.ApiFeature(subcatgeoryModel_1.default.find({ category: categoryId }), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery;
         const allCount = await subcatgeoryModel_1.default.countDocuments();
-        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size };
+        const allPages = Math.ceil(allCount / readAll.queryData.size);
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages };
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async create(name, categoryId, buffer, userData) {
@@ -71,14 +80,9 @@ class SubcategoryAdminService {
         return subcategory;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async deleteOne(subcategoryId, categoryId) {
-        const subcategory = await subcatgeoryModel_1.default.findOneAndDelete({ _id: subcategoryId, category: categoryId }).populate("category");
-        console.log({ subcategory });
-        if (!subcategory)
-            throw new errorHandling_1.ResError("subcatogry not found", 400);
-        await cloudinary_1.default.uploader.destroy(subcategory.image.public_id);
-        await cloudinary_1.default.api.delete_folder(`clothing/${subcategory.category.name}/subcategories/${subcategory.name}`);
-        console.log({ subcategory });
+    async deleteOne(subcategoryId, categoryId, isDeleted) {
+        const subcategory = await subcatgeoryModel_1.default.findOneAndUpdate({ _id: subcategoryId, category: categoryId }, { isDeleted }, { new: true });
+        const products = await productModel_1.productModel.updateMany({ subcategory: subcategoryId }, { isSubcategoryDeleted: isDeleted });
         return subcategory;
     }
 }

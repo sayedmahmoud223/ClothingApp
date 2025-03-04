@@ -60,7 +60,7 @@ class MethodsWillUsed {
         return match;
     };
     // Method to generate a JWT token
-    generateToken = ({ payload = {}, signature = process.env.TOKEN_SIGNATURE, expiresIn = '3d' }) => {
+    generateToken = ({ payload = {}, signature = process.env.TOKEN_SIGNATURE, expiresIn = '7d' }) => {
         // Ensure signature is defined
         if (!signature) {
             throw new Error("Signature (TOKEN_SIGNATURE) is missing.");

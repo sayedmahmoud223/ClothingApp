@@ -1,27 +1,31 @@
-// import categoryModel from "../../../DB/models/catgeoryModel";
-// import { eventEmitter } from "../../../utils/eventEmitter";
-// import { categoryAdminService } from "./catogryAdminService";
-// import cloudinary from "../../../utils/cloudinary"
-// import { asyncHandler, ResError } from "../../../utils/errorHandling";
+import sharp from "sharp";
+import cloudinary from "../../../utils/cloudinary"
+import { UploadApiResponse } from "cloudinary";
+import { ResError } from "../../../utils/errorHandling";
+import { ICategory } from "../../../DB/models/catgeoryModel";
 
+export const updateCategoryImage = async (category: ICategory, buffer: any, name: string) => {
+    await cloudinary.uploader.destroy(category.image.public_id)
+    const resizedImageBuffer = await sharp(buffer)
+        .resize(400, 400) // Resize to 500x500 pixels (adjust as needed)
+        .toFormat("webp") // Convert to WebP for better compression
+        .toBuffer();
 
-// eventEmitter.on("uploadCategoryImage", async ({ _id, path }) => {
-//     try {
-//         console.log({ _id, path });
-//         const category = await categoryAdminService.categoryNotExist(_id)
-//         const { secure_url, public_id } = await cloudinary.uploader.upload(path)
-//         if (!secure_url || !public_id) {
-//             throw new Error("Cloudinary upload failed: Missing URLs");
-//         }
-//         console.log({ secure_url, public_id });
-//         category.image.secure_url = secure_url
-//         category.image.public_id = public_id
-//         await category.save()
-//         console.log(category);
-//     } catch (error) {
-//         console.error("Error during image upload:", (error as any).message);
-//         // Optionally delete the category if image upload fails
-//         await categoryModel.findByIdAndDelete(_id);
-//         console.log("Category deleted due to image upload failure");
-//     }
-// })
+    // Upload to Cloudinary
+    const uploadResponse: UploadApiResponse = await new Promise((resolve, reject) => {
+        cloudinary.uploader.upload_stream(
+            { folder: `clothing/category/${name ? name : category.name}`, format: "webp" },
+            (error, result: any) => {
+                if (error) reject(error);
+                else resolve(result);
+            }
+        ).end(resizedImageBuffer);
+    });
+    console.log("Buffer Size:", resizedImageBuffer.length);
+    if (!uploadResponse.secure_url || !uploadResponse.public_id) {
+        throw new ResError("Image not uploaded", 400);
+    }
+
+    category.image.secure_url = uploadResponse.secure_url
+    category.image.public_id = uploadResponse.public_id
+}

@@ -39,14 +39,16 @@ const subcategorySchema = new mongoose_1.Schema({
     image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     createdBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: mongoose_1.Types.ObjectId, ref: 'User', required: false },
-    category: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category", required: true }
+    category: { type: mongoose_1.Schema.Types.ObjectId, ref: "Category", required: true },
+    isCategoryDeleted: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false },
 }, {
     timestamps: true,
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
-// subcategorySchema.pre(['findOne', 'findOneAndDelete', 'findOneAndUpdate', 'updateOne'], function () {
-//     this.where({ isDeleted: false });
-// });
+subcategorySchema.pre(['find', 'findOne', "findOneAndUpdate"], function () {
+    this.where({ isDeleted: false, isCategoryDeleted: false });
+});
 const subcategoryModel = mongoose_1.default.models.Subcategory || (0, mongoose_1.model)("Subcategory", subcategorySchema);
 exports.default = subcategoryModel;

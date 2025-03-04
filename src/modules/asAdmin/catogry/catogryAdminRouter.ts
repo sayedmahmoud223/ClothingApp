@@ -15,7 +15,7 @@ router.post("/create",
     fileUploud(fileType.imageTypes).single("image"),
     asyncHandler(categoryAdminController.create))
 
-router.delete("/delete_one/:categoryId",
+router.patch("/delete_one/:categoryId",
     Auth([Roles.Admin]),
     asyncHandler(categoryAdminController.deleteOne))
     

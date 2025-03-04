@@ -8,6 +8,9 @@ const catgeoryModel_1 = __importDefault(require("../../../DB/models/catgeoryMode
 const errorHandling_1 = require("../../../utils/errorHandling");
 const cloudinary_1 = __importDefault(require("../../../utils/cloudinary"));
 const sharp_1 = __importDefault(require("sharp"));
+const handleCategoryImage_1 = require("./handleCategoryImage");
+const productModel_1 = require("../../../DB/models/productModel");
+const subcatgeoryModel_1 = __importDefault(require("../../../DB/models/subcatgeoryModel"));
 class CategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async categoryExist(name) {
@@ -21,6 +24,7 @@ class CategoryAdminService {
             throw new errorHandling_1.ResError("catogry is not found", 400);
         return category;
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     async findCategoryWithName(categoryName) {
         const category = await catgeoryModel_1.default.findOne({ name: categoryName });
         if (!category)
@@ -63,14 +67,11 @@ class CategoryAdminService {
             const oldFolder = `clothing/category/${category.name}`;
             const newFolder = `clothing/category/${name}`;
             // Rename the single image to move it to the new folder
-            console.log("Hello");
             const newImagePublicId = newFolder + '/' + category.image.public_id.split('/').pop();
             console.log({ newImagePublicId });
             await cloudinary_1.default.uploader.rename(category.image.public_id, newImagePublicId);
-            console.log("Hello");
             category.image.public_id = newImagePublicId;
             category.image.secure_url = category.image.secure_url.replace(category.name, name);
-            console.log("Hello");
             // Delete the old folder (optional, Cloudinary auto-deletes empty folders)
             await cloudinary_1.default.api.delete_folder(oldFolder).catch(() => {
                 console.log(`Old folder "${oldFolder}" was already empty or does not exist.`);
@@ -79,40 +80,21 @@ class CategoryAdminService {
             category.name = name;
         }
         if (buffer) {
-            await cloudinary_1.default.uploader.destroy(category.image.public_id);
-            const resizedImageBuffer = await (0, sharp_1.default)(buffer)
-                .resize(400, 400) // Resize to 500x500 pixels (adjust as needed)
-                .toFormat("webp") // Convert to WebP for better compression
-                .toBuffer();
-            // Upload to Cloudinary
-            const uploadResponse = await new Promise((resolve, reject) => {
-                cloudinary_1.default.uploader.upload_stream({ folder: `clothing/category/${name ? name : category.name}`, format: "webp" }, (error, result) => {
-                    if (error)
-                        reject(error);
-                    else
-                        resolve(result);
-                }).end(resizedImageBuffer);
-            });
-            console.log("Buffer Size:", resizedImageBuffer.length);
-            if (!uploadResponse.secure_url || !uploadResponse.public_id) {
-                throw new errorHandling_1.ResError("Image not uploaded", 400);
-            }
-            category.image.secure_url = uploadResponse.secure_url;
-            category.image.public_id = uploadResponse.public_id;
+            await (0, handleCategoryImage_1.updateCategoryImage)(category, buffer, name);
         }
         category.updatedBy = _id;
         await category.save();
         return category;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async deleteOne(categoryId) {
-        const category = await catgeoryModel_1.default.findByIdAndDelete(categoryId);
-        console.log({ category });
+    async deleteOne(categoryId, isDeleted) {
+        const category = await catgeoryModel_1.default.findByIdAndUpdate(categoryId, { isDeleted });
         if (!category)
-            throw new errorHandling_1.ResError("catogry not found", 400);
-        await cloudinary_1.default.uploader.destroy(category.image.public_id);
-        await cloudinary_1.default.api.delete_folder(`clothing/category/${category.name}`);
-        console.log({ category });
+            throw new errorHandling_1.ResError("category not found", 400);
+        const subcategories = await subcatgeoryModel_1.default.updateMany({ category: categoryId }, { isCategoryDeleted: isDeleted });
+        console.log({ subcategories });
+        const products = await productModel_1.productModel.updateMany({ category: categoryId }, { isCategoryDeleted: isDeleted });
+        console.log({ products });
         return category;
     }
 }

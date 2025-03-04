@@ -5,6 +5,7 @@ import { categoryAdminService } from "../catogry/catogryAdminService";
 import subcategoryModel from "../../../DB/models/subcatgeoryModel";
 import { uploadImageForCreateSubcategory, uploadImageForUpdateSubcategory } from "./uploadSubcategoryImages";
 import { ApiFeature } from "../../../utils/apiFeatures";
+import { productModel } from "../../../DB/models/productModel";
 
 class SubcategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,11 +19,20 @@ class SubcategoryAdminService {
         return subcategory
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async readAll(reqParams: any) {
-        const readAll = new ApiFeature(subcategoryModel.find({}), reqParams.query).paginate().filter().search().sort();
+    // async readAll(reqParams: any) {
+    //     const readAll = new ApiFeature(subcategoryModel.find(), reqParams.query).paginate().filter().search().sort();
+    //     const data = await readAll.mongooseQuery
+    //     const allCount = await subcategoryModel.countDocuments()
+    //     return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size }
+    // }
+
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    async readSubcategoryForOneCategory(reqParams: any, categoryId: string) {
+        const readAll = new ApiFeature(subcategoryModel.find({ category: categoryId }), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery
         const allCount = await subcategoryModel.countDocuments()
-        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size }
+        const allPages = Math.ceil(allCount / readAll.queryData.size)
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async create(name: string, categoryId: string, buffer: any, userData: tokenPayload) {
@@ -66,13 +76,9 @@ class SubcategoryAdminService {
         return subcategory
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async deleteOne(subcategoryId: string, categoryId: string) {
-        const subcategory = await subcategoryModel.findOneAndDelete({ _id: subcategoryId, category: categoryId }).populate("category")
-        console.log({ subcategory });
-        if (!subcategory) throw new ResError("subcatogry not found", 400)
-        await cloudinary.uploader.destroy(subcategory.image.public_id)
-        await cloudinary.api.delete_folder(`clothing/${subcategory.category.name}/subcategories/${subcategory.name}`)
-        console.log({ subcategory });
+    async deleteOne(subcategoryId: string, categoryId: string, isDeleted: Boolean) {
+        const subcategory = await subcategoryModel.findOneAndUpdate({ _id: subcategoryId, category: categoryId }, { isDeleted }, { new: true })
+        const products = await productModel.updateMany({ subcategory: subcategoryId }, { isSubcategoryDeleted: isDeleted })
         return subcategory
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////

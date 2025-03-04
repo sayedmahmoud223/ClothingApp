@@ -5,12 +5,12 @@ import { fileType, fileUploud } from "../../../utils/multer";
 import Auth, { Roles } from "../../../middlewares/authMiddleware";
 const router = Router({ mergeParams: true })
 
-router.get("/read_all", asyncHandler(subcategoryAdminController.readAll))
-router.post("/", Auth([Roles.Admin]),
+// router.get("/read_all", asyncHandler(subcategoryAdminController.readAll))
+router.get("/read_all", asyncHandler(subcategoryAdminController.readSubcategoryForOneCategory))
+router.post("/",
     Auth(Roles.Admin),
     fileUploud(fileType.imageTypes).single("image"),
     asyncHandler(subcategoryAdminController.create))
-
 
 router.patch("/:subcategoryId",
     Auth([Roles.Admin]),

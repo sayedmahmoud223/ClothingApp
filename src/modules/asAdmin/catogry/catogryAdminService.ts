@@ -6,6 +6,9 @@ import { randomUUID } from "crypto";
 import { UploadApiResponse } from "cloudinary";
 import sharp from "sharp";
 import { tokenPayload } from "../../../type";
+import { updateCategoryImage } from "./handleCategoryImage";
+import { productModel } from "../../../DB/models/productModel";
+import subcategoryModel from "../../../DB/models/subcatgeoryModel";
 
 class CategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,8 +21,9 @@ class CategoryAdminService {
         if (!category) throw new ResError("catogry is not found", 400)
         return category
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////////
     async findCategoryWithName(categoryName: string) {
-        const category = await categoryModel.findOne({ name:categoryName })
+        const category = await categoryModel.findOne({ name: categoryName })
         if (!category) throw new ResError("catogry is not found", 400)
         return category
     }
@@ -61,14 +65,11 @@ class CategoryAdminService {
             const oldFolder = `clothing/category/${category.name}`;
             const newFolder = `clothing/category/${name}`;
             // Rename the single image to move it to the new folder
-            console.log("Hello");
             const newImagePublicId = newFolder + '/' + category.image.public_id.split('/').pop();
-            console.log({newImagePublicId});
+            console.log({ newImagePublicId });
             await cloudinary.uploader.rename(category.image.public_id, newImagePublicId);
-            console.log("Hello");
             category.image.public_id = newImagePublicId
             category.image.secure_url = category.image.secure_url.replace(category.name, name)
-            console.log("Hello");
             // Delete the old folder (optional, Cloudinary auto-deletes empty folders)
             await cloudinary.api.delete_folder(oldFolder).catch(() => {
                 console.log(`Old folder "${oldFolder}" was already empty or does not exist.`);
@@ -78,42 +79,20 @@ class CategoryAdminService {
         }
 
         if (buffer) {
-            await cloudinary.uploader.destroy(category.image.public_id)
-            const resizedImageBuffer = await sharp(buffer)
-                .resize(400, 400) // Resize to 500x500 pixels (adjust as needed)
-                .toFormat("webp") // Convert to WebP for better compression
-                .toBuffer();
-
-            // Upload to Cloudinary
-            const uploadResponse: UploadApiResponse = await new Promise((resolve, reject) => {
-                cloudinary.uploader.upload_stream(
-                    { folder: `clothing/category/${name ? name : category.name}`, format: "webp" },
-                    (error, result: any) => {
-                        if (error) reject(error);
-                        else resolve(result);
-                    }
-                ).end(resizedImageBuffer);
-            });
-            console.log("Buffer Size:", resizedImageBuffer.length);
-            if (!uploadResponse.secure_url || !uploadResponse.public_id) {
-                throw new ResError("Image not uploaded", 400);
-            }
-
-            category.image.secure_url = uploadResponse.secure_url
-            category.image.public_id = uploadResponse.public_id
+            await updateCategoryImage(category, buffer, name)
         }
         category.updatedBy = _id
         await category.save()
         return category
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    async deleteOne(categoryId: string) {
-        const category = await categoryModel.findByIdAndDelete(categoryId)
-        console.log({ category });
-        if (!category) throw new ResError("catogry not found", 400)
-        await cloudinary.uploader.destroy(category.image.public_id)
-        await cloudinary.api.delete_folder(`clothing/category/${category.name}`)
-        console.log({ category });
+    async deleteOne(categoryId: string, isDeleted:Boolean) {
+        const category = await categoryModel.findByIdAndUpdate(categoryId, { isDeleted })
+        if (!category) throw new ResError("category not found", 400)
+        const subcategories = await subcategoryModel.updateMany({ category: categoryId }, { isCategoryDeleted:isDeleted })
+        console.log({ subcategories });
+        const products = await productModel.updateMany({ category: categoryId }, { isCategoryDeleted:isDeleted })
+        console.log({ products });
         return category
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////

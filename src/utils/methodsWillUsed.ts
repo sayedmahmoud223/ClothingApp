@@ -47,7 +47,7 @@ class MethodsWillUsed {
     };
 
     // Method to generate a JWT token
-    generateToken = ({ payload = {}, signature = process.env.TOKEN_SIGNATURE, expiresIn = '3d' }: GenerateTokenParams) => {
+    generateToken = ({ payload = {}, signature = process.env.TOKEN_SIGNATURE, expiresIn = '7d' }: GenerateTokenParams) => {
 
         // Ensure signature is defined
         if (!signature) {
