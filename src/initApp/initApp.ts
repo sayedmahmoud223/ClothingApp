@@ -10,7 +10,7 @@ export const BaseUrl = process.env.ONLINE_BASE_URL
 export const initApp = async (app: any, express: any) => {
     await connectDB()
     app.use(cors({
-        origin: ["http://localhost:4200", "https://dashboard-gules-seven.vercel.app"],
+        origin: ["http://localhost:4200", "https://dashboard-gules-seven.vercel.app", "http://localhost:3000"],
         credentials: true
     }))
     app.use(cookieParser())
