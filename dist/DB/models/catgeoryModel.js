@@ -46,7 +46,7 @@ const categorySchema = new mongoose_1.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
-categorySchema.pre(["find", 'findOne'], function () {
+categorySchema.pre(["find", 'findOne', "countDocuments"], function () {
     this.where({ isDeleted: false });
 });
 const categoryModel = mongoose_1.default.models.Category || (0, mongoose_1.model)("Category", categorySchema);

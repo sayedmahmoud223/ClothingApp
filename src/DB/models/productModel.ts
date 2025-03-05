@@ -52,7 +52,7 @@ productSchema.index({ soldPrice: 1 });  // Price-based filtering
 productSchema.index({ description: "text" });  // Full-text search
 productSchema.index({ mainCiolor: 1 });  // Full-text search
 
-productSchema.pre(['find', 'findOne'], function () {
+productSchema.pre(['find', 'findOne',"countDocuments"], function () {
     this.where({ isDeleted: false, isCategoryDeleted: false, isSubcategoryDeleted: false })
 })
 

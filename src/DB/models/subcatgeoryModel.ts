@@ -26,7 +26,7 @@ const subcategorySchema = new Schema<ISubcategory>({
     toObject: { virtuals: true }
 });
 
-subcategorySchema.pre(['find', 'findOne',"findOneAndUpdate"], function () {
+subcategorySchema.pre(['find', 'findOne', "findOneAndUpdate","countDocuments"], function () {
     this.where({ isDeleted: false, isCategoryDeleted: false });
 });
 

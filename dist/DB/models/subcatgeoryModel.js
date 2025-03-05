@@ -47,7 +47,7 @@ const subcategorySchema = new mongoose_1.Schema({
     toJSON: { virtuals: true },
     toObject: { virtuals: true }
 });
-subcategorySchema.pre(['find', 'findOne', "findOneAndUpdate"], function () {
+subcategorySchema.pre(['find', 'findOne', "findOneAndUpdate", "countDocuments"], function () {
     this.where({ isDeleted: false, isCategoryDeleted: false });
 });
 const subcategoryModel = mongoose_1.default.models.Subcategory || (0, mongoose_1.model)("Subcategory", subcategorySchema);

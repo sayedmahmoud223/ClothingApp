@@ -25,7 +25,7 @@ const categorySchema = new Schema<ICategory>({
     toObject: { virtuals: true }
 });
 
-categorySchema.pre(["find", 'findOne'], function () {
+categorySchema.pre(["find", 'findOne', "countDocuments"], function () {
     this.where({ isDeleted: false });
 });
 
