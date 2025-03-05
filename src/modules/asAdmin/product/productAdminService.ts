@@ -15,7 +15,7 @@ class ProductAdminService {
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async productNotExist(productId: string) {
-        const product = await productModel.findById({ _id: productId }).populate("category subcategory")
+        const product = await productModel.findById(productId).populate("category subcategory")
         if (!product) throw new ResError("product not found", 400)
         return product
     }

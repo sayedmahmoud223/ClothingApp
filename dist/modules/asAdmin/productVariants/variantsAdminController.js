@@ -3,10 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.variantAdminController = void 0;
 const variantsAdminService_1 = require("./variantsAdminService");
 class VariantAdminController {
-    // async readAll(req: Request, res: Response, next: NextFunction) {
-    //     const data = await variantController.readAll(req, res, next)
-    //     return res.status(200).json({ Success: true, message: "Success", data })
-    // }
+    async readAll(req, res, next) {
+        const { productId } = req.params;
+        const { data, allCount, currentPage, size, allPages } = await variantsAdminService_1.variantAdminService.readAll(req, productId);
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages }, data });
+    }
     async createController(req, res, next) {
         const { productId } = req.params;
         const files = Array.isArray(req.files) ? req.files : [];

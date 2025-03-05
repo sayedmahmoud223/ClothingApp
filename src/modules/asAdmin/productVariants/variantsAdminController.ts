@@ -6,10 +6,11 @@ import { IImage } from "./IVariantsAdmin";
 
 class VariantAdminController {
 
-    // async readAll(req: Request, res: Response, next: NextFunction) {
-    //     const data = await variantController.readAll(req, res, next)
-    //     return res.status(200).json({ Success: true, message: "Success", data })
-    // }
+    async readAll(req: Request, res: Response, next: NextFunction) {
+        const { productId } = req.params
+        const { data, allCount, currentPage, size, allPages } = await variantAdminService.readAll(req, productId)
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages }, data })
+    }
 
     async createController(req: Request, res: Response, next: NextFunction) {
         const { productId } = req.params

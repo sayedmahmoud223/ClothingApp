@@ -15,11 +15,11 @@ export interface IProduct extends Document {
     smallImage: Record<string, string>
     mainColor: string
     variants: Types.ObjectId[]
-    createdBy?:Types.ObjectId
-    updatedBy?:Types.ObjectId
+    createdBy?: Types.ObjectId
+    updatedBy?: Types.ObjectId
     isDeleted: Boolean
-    isCategoryDeleted:Boolean
-    isSubcategoryDeleted:Boolean
+    isCategoryDeleted: Boolean
+    isSubcategoryDeleted: Boolean
 }
 
 const productSchema = new Schema<IProduct>({
@@ -52,7 +52,7 @@ productSchema.index({ soldPrice: 1 });  // Price-based filtering
 productSchema.index({ description: "text" });  // Full-text search
 productSchema.index({ mainCiolor: 1 });  // Full-text search
 
-productSchema.pre(['find', 'findOne',"findOneAndUpdate"], function () {
+productSchema.pre(['find', 'findOne'], function () {
     this.where({ isDeleted: false, isCategoryDeleted: false, isSubcategoryDeleted: false })
 })
 

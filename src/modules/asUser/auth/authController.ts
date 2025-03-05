@@ -63,24 +63,12 @@ class AuthController {
             expiresIn: "15m"
         });
 
-        const new_refresh_token = methodsWillUsed.generateToken({
-            payload: { _id: userExist._id },
-            expiresIn: "7d"
-        });
-
         // Set new cookies
         res.cookie("access_token", new_access_token, {
             httpOnly: true,
             secure: true,
             sameSite: "none",
             maxAge: 15 * 60 * 1000, // 15 minutes
-        });
-
-        res.cookie("refresh_token", new_refresh_token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         });
 
         return res.status(200).json({

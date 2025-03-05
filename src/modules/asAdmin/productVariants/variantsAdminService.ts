@@ -6,6 +6,7 @@ import { IVariant, variantModel } from "../../../DB/models/variantModel";
 import { productAdminService } from "../product/productAdminService";
 import { ICreateVariantBody, ICreateVariantFile, IImage, IParams } from "./IVariantsAdmin";
 import { uploadUpdatevariantImages, uploadvariantImages } from "./uploadVariantsImages";
+import { ApiFeature } from "../../../utils/apiFeatures";
 // import { uploadImageForCreatevariant,uploadImageForUpdateVariant } from "./uploadvariantImages";
 
 class VariantAdminService {
@@ -18,6 +19,14 @@ class VariantAdminService {
         const variant = await variantModel.findOne({ _id: variantId, productId })
         if (!variant) throw new ResError("variant not found", 400)
         return variant
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    async readAll(reqParams: any, productId: string) {
+        const readAll = new ApiFeature(variantModel.find({ productId }), reqParams.query).paginate().filter().search().sort();
+        const data = await readAll.mongooseQuery
+        const allCount = await variantModel.countDocuments()
+        const allPages = Math.ceil(allCount / readAll.queryData.size)
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async createService(productId: string, reqBody: ICreateVariantBody, reqFiles: IImage[]) {

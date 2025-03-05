@@ -5,6 +5,7 @@ const errorHandling_1 = require("../../../utils/errorHandling");
 const variantModel_1 = require("../../../DB/models/variantModel");
 const productAdminService_1 = require("../product/productAdminService");
 const uploadVariantsImages_1 = require("./uploadVariantsImages");
+const apiFeatures_1 = require("../../../utils/apiFeatures");
 // import { uploadImageForCreatevariant,uploadImageForUpdateVariant } from "./uploadvariantImages";
 class VariantAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,6 +19,14 @@ class VariantAdminService {
         if (!variant)
             throw new errorHandling_1.ResError("variant not found", 400);
         return variant;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////////
+    async readAll(reqParams, productId) {
+        const readAll = new apiFeatures_1.ApiFeature(variantModel_1.variantModel.find({ productId }), reqParams.query).paginate().filter().search().sort();
+        const data = await readAll.mongooseQuery;
+        const allCount = await variantModel_1.variantModel.countDocuments();
+        const allPages = Math.ceil(allCount / readAll.queryData.size);
+        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages };
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async createService(productId, reqBody, reqFiles) {
