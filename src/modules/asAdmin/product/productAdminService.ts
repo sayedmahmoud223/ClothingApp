@@ -29,11 +29,11 @@ class ProductAdminService {
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     async create(reqBody: IProductBody, buffer: string, userData: tokenPayload) {
-        const { productName, description, categoryName, subcategoryName, costPrice, soldPrice, discount, mainColor } = reqBody
+        const { productName, description, categoryId, subcategoryId, costPrice, soldPrice, discount, mainColor } = reqBody
         // find category
-        const category = await categoryAdminService.findCategoryWithName(categoryName)
+        const category = await categoryAdminService.categoryNotExist(categoryId)
         // find subcategory
-        const subcategory = await subcategoryModel.findOne({ name: subcategoryName, category: category._id })
+        const subcategory = await subcategoryModel.findOne({ _id: subcategoryId, category: category._id })
         if (!subcategory) throw new ResError("subcategory not found", 400)
         // create Product
         const product = new productModel({ productName, description, costPrice, soldPrice, mainColor, category: category._id, subcategory: subcategory._id })

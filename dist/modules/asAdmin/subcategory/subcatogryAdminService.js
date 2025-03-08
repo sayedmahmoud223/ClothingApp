@@ -25,13 +25,6 @@ class SubcategoryAdminService {
         return subcategory;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
-    // async readAll(reqParams: any) {
-    //     const readAll = new ApiFeature(subcategoryModel.find(), reqParams.query).paginate().filter().search().sort();
-    //     const data = await readAll.mongooseQuery
-    //     const allCount = await subcategoryModel.countDocuments()
-    //     return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size }
-    // }
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
     async readSubcategoryForOneCategory(reqParams, categoryId) {
         const readAll = new apiFeatures_1.ApiFeature(subcatgeoryModel_1.default.find({ category: categoryId }), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery;
@@ -56,7 +49,6 @@ class SubcategoryAdminService {
         const category = await catogryAdminService_1.categoryAdminService.categoryNotExist(categoryId);
         const subcategory = await this.subcategoryNotExist(subcategoryId, categoryId);
         const { _id } = userData;
-        console.log({ subcategory });
         if (name && name !== subcategory.name) {
             const oldFolder = `clothing/${category.name}/subcategories/${subcategory.name}`;
             const newFolder = `clothing/${category.name}/subcategories/${name}`;

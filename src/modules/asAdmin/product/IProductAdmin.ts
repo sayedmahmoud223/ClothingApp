@@ -1,7 +1,7 @@
 export interface IProductBody {
     productName: string;
-    categoryName: string;
-    subcategoryName: string;
+    categoryId: string;
+    subcategoryId: string;
     description: string;
     slug: string;
     costPrice: number;
