@@ -34,6 +34,7 @@ class ProductAdminService {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     async create(reqBody, buffer, userData) {
         const { productName, description, categoryId, subcategoryId, costPrice, soldPrice, discount, mainColor } = reqBody;
+        console.log({ subcategoryId });
         // find category
         const category = await catogryAdminService_1.categoryAdminService.categoryNotExist(categoryId);
         // find subcategory

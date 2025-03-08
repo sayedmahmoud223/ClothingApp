@@ -72,7 +72,7 @@ class AuthService {
         if (!match)
             return next(new errorHandling_1.ResError("in-valid password", 400));
         // generate user token
-        const token = methodsWillUsed_1.methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role } });
+        const token = methodsWillUsed_1.methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role }, expiresIn: "15m" });
         const refresh_token = methodsWillUsed_1.methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role }, expiresIn: 60 * 60 * 24 * 365 });
         return { user, token, refresh_token };
     }

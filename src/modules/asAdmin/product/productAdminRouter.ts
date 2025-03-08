@@ -12,7 +12,7 @@ router.get("/read_all", asyncHandler(productAdminController.readAll))
 
 router.post("/create",
     Auth(Roles.Admin),
-    fileUploud(fileType.imageTypes).single("subImages"),
+    fileUploud(fileType.imageTypes).single("image"),
     asyncHandler(productAdminController.create))
 
 

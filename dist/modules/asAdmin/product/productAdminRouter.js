@@ -45,7 +45,7 @@ const variantsAdminRouter_1 = __importDefault(require("../productVariants/varian
 const router = (0, express_1.Router)({ mergeParams: true });
 router.use("/:productId/variant", variantsAdminRouter_1.default);
 router.get("/read_all", (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.readAll));
-router.post("/create", (0, authMiddleware_1.default)(authMiddleware_1.Roles.Admin), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("subImages"), (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.create));
+router.post("/create", (0, authMiddleware_1.default)(authMiddleware_1.Roles.Admin), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.create));
 router.patch("/update-one/:productId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, multer_1.fileUploud)(multer_1.fileType.imageTypes).single("image"), (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.updateOne));
 router.delete("/delete-one/:productId", (0, authMiddleware_1.default)([authMiddleware_1.Roles.Admin]), (0, errorHandling_1.asyncHandler)(productAdminController_1.productAdminController.deleteOne));
 exports.default = router;

@@ -60,7 +60,7 @@ class AuthService {
         if (!password) {
             return next(new ResError("password is requierd", 400))
         }
-        const user: any = await userModel.findOne({ email:"sbendary977@gmail.com", isDeleted: false })
+        const user: any = await userModel.findOne({ email: "sbendary977@gmail.com", isDeleted: false })
         console.log({ user: user });
         console.log({ userPassword: user.password });
         if (!user) return next(new Error(' Not register account', { cause: 404 }))
@@ -70,7 +70,7 @@ class AuthService {
         const match = methodsWillUsed.compare({ plaintext: password, hashValue: user?.password })
         if (!match) return next(new ResError("in-valid password", 400))
         // generate user token
-        const token = methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role } })
+        const token = methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role }, expiresIn: "15m" })
         const refresh_token = methodsWillUsed.generateToken({ payload: { _id: user._id, email: user.email, role: user.role }, expiresIn: 60 * 60 * 24 * 365 })
         return { user, token, refresh_token }
     }
