@@ -23,14 +23,14 @@ class ProductAdminService {
     async readAll(reqParams: any) {
         const readAll = new ApiFeature(productModel.find({}), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery.populate("category subcategory")
-        const allCount = await productModel.countDocuments()
+        const allCount = await productModel.countDocuments({ name: readAll.queryData.search })
         const allPages = Math.ceil(allCount / readAll.queryData.size)
         return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     async create(reqBody: IProductBody, buffer: string, userData: tokenPayload) {
         const { productName, description, categoryId, subcategoryId, costPrice, soldPrice, discount, mainColor } = reqBody
-        console.log({subcategoryId});
+        console.log({ subcategoryId });
         // find category
         const category = await categoryAdminService.categoryNotExist(categoryId)
         // find subcategory

@@ -16,13 +16,13 @@ router.post("/create",
     asyncHandler(productAdminController.create))
 
 
-router.patch("/update-one/:productId",
+router.patch("/update_one/:productId",
     Auth([Roles.Admin]),
     fileUploud(fileType.imageTypes).single("image"),
     asyncHandler(productAdminController.updateOne))
 
 
-router.delete("/delete-one/:productId",
+router.delete("/delete_one/:productId",
     Auth([Roles.Admin]),
     asyncHandler(productAdminController.deleteOne))
 
