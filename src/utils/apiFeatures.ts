@@ -7,10 +7,11 @@ export class ApiFeature<T> {
     constructor(mongooseQuery: Query<T[], T>, queryData: Record<string, any>) {
         this.mongooseQuery = mongooseQuery;
         this.queryData = queryData;
+        console.log({ mongooseQuery: this.mongooseQuery });
+        console.log({ query: this.queryData });
     }
 
     paginate(): this {
-        console.log({ query: this.queryData });
 
         let { page, size } = this.queryData;
         page = Number(page) > 0 ? Number(page) : 1;
@@ -25,7 +26,7 @@ export class ApiFeature<T> {
         this.mongooseQuery.limit(size).skip(skip);
         return this;
     }
-    
+
     filter(): this {
         let filterQuery: Record<string, any> = { ...this.queryData };
         const exclude = ['page', 'size', 'limit', 'fields', 'sort', 'search'];

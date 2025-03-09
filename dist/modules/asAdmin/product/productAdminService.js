@@ -26,6 +26,7 @@ class ProductAdminService {
     //////////////////////////////////////////////////////////////////////////////////////////////////
     async readAll(reqParams) {
         const readAll = new apiFeatures_1.ApiFeature(productModel_1.productModel.find({}), reqParams.query).paginate().filter().search().sort();
+        console.log({ name: readAll.queryData.search });
         const data = await readAll.mongooseQuery.populate("category subcategory");
         const allCount = await productModel_1.productModel.countDocuments({ name: readAll.queryData.search });
         const allPages = Math.ceil(allCount / readAll.queryData.size);

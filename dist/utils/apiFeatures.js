@@ -7,9 +7,10 @@ class ApiFeature {
     constructor(mongooseQuery, queryData) {
         this.mongooseQuery = mongooseQuery;
         this.queryData = queryData;
+        console.log({ mongooseQuery: this.mongooseQuery });
+        console.log({ query: this.queryData });
     }
     paginate() {
-        console.log({ query: this.queryData });
         let { page, size } = this.queryData;
         page = Number(page) > 0 ? Number(page) : 1;
         size = Number(size) > 0 ? Number(size) : 10;
