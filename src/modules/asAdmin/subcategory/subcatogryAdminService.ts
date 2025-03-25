@@ -25,8 +25,8 @@ class SubcategoryAdminService {
         const data = await readAll.mongooseQuery
         const allCount = await readAll.getAllCount(subcategoryModel)
         const allPages = Math.ceil(allCount / readAll.queryData.size)
-        const categoryName = categoryModel.findById(categoryId)
-        return { data,categoryName, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
+        const categoryName = await categoryModel.findById(categoryId).select("name")
+        return { data, categoryName, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async create(name: string, categoryId: string, buffer: any, userData: tokenPayload) {

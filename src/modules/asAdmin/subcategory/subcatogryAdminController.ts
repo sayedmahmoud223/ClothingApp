@@ -10,12 +10,12 @@ class SubCategoryAdminController {
     //     const { data, allCount, currentPage, size } = await subcategoryAdminService.readAll(req)
     //     return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size }, data })
     // }
-    
+
     async readSubcategoryForOneCategory(req: Request, res: Response, next: NextFunction) {
-        const {categoryId} = req.params
-        console.log({categoryId});
-        const { data,categoryName, allCount, currentPage, size, allPages } = await subcategoryAdminService.readSubcategoryForOneCategory(req,categoryId)
-        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages },categoryName, data })
+        const { categoryId } = req.params
+        console.log({ categoryId });
+        const { data, categoryName, allCount, currentPage, size, allPages } = await subcategoryAdminService.readSubcategoryForOneCategory(req, categoryId)
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages }, categoryName, data })
     }
 
     async create(req: Request, res: Response, next: NextFunction) {
@@ -45,8 +45,8 @@ class SubCategoryAdminController {
 
     async deleteOne(req: Request, res: Response, next: NextFunction) {
         const { isDeleted } = req.body
-        console.log({isDeleted});
-        
+        console.log({ isDeleted });
+
         const data = await subcategoryAdminService.deleteOne(req.params.subcategoryId, req.params.categoryId, isDeleted)
         return res.status(200).json({ Success: true, message: "Success", data })
     }

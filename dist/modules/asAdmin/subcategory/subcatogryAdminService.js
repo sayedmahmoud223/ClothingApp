@@ -31,7 +31,7 @@ class SubcategoryAdminService {
         const data = await readAll.mongooseQuery;
         const allCount = await readAll.getAllCount(subcatgeoryModel_1.default);
         const allPages = Math.ceil(allCount / readAll.queryData.size);
-        const categoryName = catgeoryModel_1.default.findById(categoryId);
+        const categoryName = await catgeoryModel_1.default.findById(categoryId).select("name");
         return { data, categoryName, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages };
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
