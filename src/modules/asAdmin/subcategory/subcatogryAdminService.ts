@@ -6,6 +6,7 @@ import subcategoryModel from "../../../DB/models/subcatgeoryModel";
 import { uploadImageForCreateSubcategory, uploadImageForUpdateSubcategory } from "./uploadSubcategoryImages";
 import { ApiFeature } from "../../../utils/apiFeatures";
 import { productModel } from "../../../DB/models/productModel";
+import categoryModel from "../../../DB/models/catgeoryModel";
 
 class SubcategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +25,8 @@ class SubcategoryAdminService {
         const data = await readAll.mongooseQuery
         const allCount = await readAll.getAllCount(subcategoryModel)
         const allPages = Math.ceil(allCount / readAll.queryData.size)
-        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
+        const categoryName = categoryModel.findById(categoryId)
+        return { data,categoryName, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async create(name: string, categoryId: string, buffer: any, userData: tokenPayload) {

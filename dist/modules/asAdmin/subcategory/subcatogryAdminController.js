@@ -11,8 +11,8 @@ class SubCategoryAdminController {
     async readSubcategoryForOneCategory(req, res, next) {
         const { categoryId } = req.params;
         console.log({ categoryId });
-        const { data, allCount, currentPage, size, allPages } = await subcatogryAdminService_1.subcategoryAdminService.readSubcategoryForOneCategory(req, categoryId);
-        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages }, data });
+        const { data, categoryName, allCount, currentPage, size, allPages } = await subcatogryAdminService_1.subcategoryAdminService.readSubcategoryForOneCategory(req, categoryId);
+        return res.status(200).json({ Success: true, message: "Success", pagination: { count: allCount, currentPage, size, allPages }, categoryName, data });
     }
     async create(req, res, next) {
         if (!req.decoded)

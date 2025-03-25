@@ -11,6 +11,7 @@ const subcatgeoryModel_1 = __importDefault(require("../../../DB/models/subcatgeo
 const uploadSubcategoryImages_1 = require("./uploadSubcategoryImages");
 const apiFeatures_1 = require("../../../utils/apiFeatures");
 const productModel_1 = require("../../../DB/models/productModel");
+const catgeoryModel_1 = __importDefault(require("../../../DB/models/catgeoryModel"));
 class SubcategoryAdminService {
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async subcategoryExist(name) {
@@ -30,7 +31,8 @@ class SubcategoryAdminService {
         const data = await readAll.mongooseQuery;
         const allCount = await readAll.getAllCount(subcatgeoryModel_1.default);
         const allPages = Math.ceil(allCount / readAll.queryData.size);
-        return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages };
+        const categoryName = catgeoryModel_1.default.findById(categoryId);
+        return { data, categoryName, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages };
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////////
     async create(name, categoryId, buffer, userData) {
