@@ -14,7 +14,7 @@ const uploadImageForCreateSubcategory = async (category, name, buffer) => {
         .toBuffer();
     // Upload to Cloudinary
     const uploadResponse = await new Promise((resolve, reject) => {
-        cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${category.name}/subcategories/${name}`, format: "webp" }, (error, result) => {
+        cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${category.name}/subcategories/${name.toLowerCase()}`, format: "webp" }, (error, result) => {
             if (error)
                 reject(error);
             else
@@ -35,7 +35,7 @@ const uploadImageForUpdateSubcategory = async (subcategory, category, name, buff
         .toBuffer();
     // Upload to Cloudinary
     const uploadResponse = await new Promise((resolve, reject) => {
-        cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${category.name}/subcategories/${name ? name : subcategory.name}`, format: "webp" }, (error, result) => {
+        cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${category.name}/subcategories/${name ? name.toLowerCase() : subcategory.name}`, format: "webp" }, (error, result) => {
             if (error)
                 reject(error);
             else

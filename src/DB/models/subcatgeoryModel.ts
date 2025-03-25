@@ -13,7 +13,7 @@ export interface ISubcategory extends Document {
 }
 
 const subcategorySchema = new Schema<ISubcategory>({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, lowercase: true, required: true, unique: true },
     image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     createdBy: { type: Types.ObjectId, ref: 'User', required: true },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: false },

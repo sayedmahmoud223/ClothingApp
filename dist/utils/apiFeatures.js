@@ -8,7 +8,7 @@ class ApiFeature {
         this.mongooseQuery = mongooseQuery;
         this.queryData = queryData;
         console.log({ mongooseQuery: this.mongooseQuery });
-        console.log({ query: this.queryData });
+        console.log({ query: this.queryData.search });
     }
     paginate() {
         let { page, size } = this.queryData;
@@ -18,6 +18,7 @@ class ApiFeature {
         this.queryData.size = size;
         const skip = (page - 1) * size;
         console.log({ skip });
+        console.log({ count: this.mongooseQuery.countDocuments() });
         this.mongooseQuery.limit(size).skip(skip);
         return this;
     }
@@ -47,6 +48,13 @@ class ApiFeature {
             this.mongooseQuery.sort(this.queryData.sort.replace(/,/g, " "));
         }
         return this;
+    }
+    async getAllCount(model) {
+        const allCount = this?.queryData?.search ?
+            await model.countDocuments({ name: { $regex: this.queryData.search, $options: "i" } })
+            : await model.countDocuments();
+        console.log({ allCount });
+        return allCount;
     }
 }
 exports.ApiFeature = ApiFeature;

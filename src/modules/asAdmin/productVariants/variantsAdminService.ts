@@ -24,7 +24,7 @@ class VariantAdminService {
     async readAll(reqParams: any, productId: string) {
         const readAll = new ApiFeature(variantModel.find({ productId }), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery
-        const allCount = await variantModel.countDocuments()
+        const allCount = await readAll.getAllCount(variantModel)
         const allPages = Math.ceil(allCount / readAll.queryData.size)
         return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
     }

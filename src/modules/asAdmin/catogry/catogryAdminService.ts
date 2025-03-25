@@ -41,7 +41,7 @@ class CategoryAdminService {
         // Upload to Cloudinary
         const uploadResponse: UploadApiResponse = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
-                { folder: `clothing/category/${name}`, format: "webp" },
+                { folder: `clothing/category/${name.toLowerCase()}`, format: "webp" },
                 (error, result: any) => {
                     if (error) reject(error);
                     else resolve(result);
@@ -63,19 +63,19 @@ class CategoryAdminService {
 
         if (name && name !== category.name) {
             const oldFolder = `clothing/category/${category.name}`;
-            const newFolder = `clothing/category/${name}`;
+            const newFolder = `clothing/category/${name.toLowerCase()}`;
             // Rename the single image to move it to the new folder
             const newImagePublicId = newFolder + '/' + category.image.public_id.split('/').pop();
             console.log({ newImagePublicId });
             await cloudinary.uploader.rename(category.image.public_id, newImagePublicId);
             category.image.public_id = newImagePublicId
-            category.image.secure_url = category.image.secure_url.replace(category.name, name)
+            category.image.secure_url = category.image.secure_url.replace(category.name, name.toLowerCase())
             // Delete the old folder (optional, Cloudinary auto-deletes empty folders)
             await cloudinary.api.delete_folder(oldFolder).catch(() => {
                 console.log(`Old folder "${oldFolder}" was already empty or does not exist.`);
             });
             // Update category name in DB
-            category.name = name;
+            category.name = name.toLowerCase();
         }
 
         if (buffer) {

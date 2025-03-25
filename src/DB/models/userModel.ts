@@ -6,7 +6,7 @@ import { ResError } from '../../utils/errorHandling';
 
 const userSchema = new Schema({
     userName: { type: String, required: [true, 'userName is required'], min: [2, 'minimum length 2 char'], max: [20, 'max length 2 char'], lowercase: true },
-    email: { type: String, unique: [true, 'email must be unique value'], required: [true, 'userName is required'] },
+    email: { type: String,lowercase: true, unique: [true, 'email must be unique value'], required: [true, 'userName is required'] },
     password: { type: String },
     phone: { type: String},
     address:{

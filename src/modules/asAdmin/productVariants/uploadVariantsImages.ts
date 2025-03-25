@@ -15,7 +15,7 @@ export const uploadvariantImages = async (reqFiles: IImage[], product: any, vari
         console.log("Uploading image to Cloudinary...");
         const uploadResponse: UploadApiResponse = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
-                { folder: `clothing/${product.category.name}/${product.productName}/${colorName}`, format: "webp", public_id: `${randomUUID()}_${index}` },
+                { folder: `clothing/${product.category.name}/${product.productName}/${colorName.toLowerCase()}`, format: "webp", public_id: `${randomUUID()}_${index}` },
                 (error, result: any) => {
                     if (error) reject(error);
                     else resolve(result);
@@ -48,7 +48,7 @@ export const uploadUpdatevariantImages = async (reqFiles: IImage[], product: any
         console.log("Uploading image to Cloudinary...");
         const uploadResponse: UploadApiResponse = await new Promise((resolve, reject) => {
             cloudinary.uploader.upload_stream(
-                { folder: `clothing/${product.category.name}/${product.productName}/${colorName}`, format: "webp", public_id: `${randomUUID()}_${index}` },
+                { folder: `clothing/${product.category.name}/${product.productName}/${colorName.toLowerCase()}`, format: "webp", public_id: `${randomUUID()}_${index}` },
                 (error, result: any) => {
                     if (error) reject(error);
                     else resolve(result);

@@ -44,7 +44,7 @@ class AuthController {
 
     async refreshToken(req: Request, res: Response, next: NextFunction) {
         const { refresh_token } = req.cookies;
-
+        // console.log();
         if (!refresh_token) throw new ResError("Go to login", 400);
 
         // Verify refresh token

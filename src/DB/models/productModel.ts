@@ -23,8 +23,8 @@ export interface IProduct extends Document {
 }
 
 const productSchema = new Schema<IProduct>({
-    productName: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'], max: [30, 'max length 2 char'] },
-    description: { type: String, trim: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'] },
+    productName: { type: String, trim: true, lowercase: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'], max: [30, 'max length 2 char'] },
+    description: { type: String, trim: true, lowercase: true, required: [true, 'ProductName is required'], min: [2, 'minimum length 2 char'] },
     category: { type: Types.ObjectId, ref: "Category", required: true },
     subcategory: { type: Types.ObjectId, ref: "Subcategory", required: true },
     costPrice: { type: Number, required: true, default: 0 },

@@ -15,7 +15,7 @@ const uploadvariantImages = async (reqFiles, product, variant, colorName) => {
             .toBuffer();
         console.log("Uploading image to Cloudinary...");
         const uploadResponse = await new Promise((resolve, reject) => {
-            cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${product.category.name}/${product.productName}/${colorName}`, format: "webp", public_id: `${(0, crypto_1.randomUUID)()}_${index}` }, (error, result) => {
+            cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${product.category.name}/${product.productName}/${colorName.toLowerCase()}`, format: "webp", public_id: `${(0, crypto_1.randomUUID)()}_${index}` }, (error, result) => {
                 if (error)
                     reject(error);
                 else
@@ -43,7 +43,7 @@ const uploadUpdatevariantImages = async (reqFiles, product, variant, colorName) 
             .toBuffer();
         console.log("Uploading image to Cloudinary...");
         const uploadResponse = await new Promise((resolve, reject) => {
-            cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${product.category.name}/${product.productName}/${colorName}`, format: "webp", public_id: `${(0, crypto_1.randomUUID)()}_${index}` }, (error, result) => {
+            cloudinary_1.default.uploader.upload_stream({ folder: `clothing/${product.category.name}/${product.productName}/${colorName.toLowerCase()}`, format: "webp", public_id: `${(0, crypto_1.randomUUID)()}_${index}` }, (error, result) => {
                 if (error)
                     reject(error);
                 else

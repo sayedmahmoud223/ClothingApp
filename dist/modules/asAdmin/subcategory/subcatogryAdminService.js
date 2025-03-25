@@ -28,7 +28,7 @@ class SubcategoryAdminService {
     async readSubcategoryForOneCategory(reqParams, categoryId) {
         const readAll = new apiFeatures_1.ApiFeature(subcatgeoryModel_1.default.find({ category: categoryId }), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery;
-        const allCount = await subcatgeoryModel_1.default.countDocuments();
+        const allCount = await readAll.getAllCount(subcatgeoryModel_1.default);
         const allPages = Math.ceil(allCount / readAll.queryData.size);
         return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages };
     }
@@ -51,18 +51,18 @@ class SubcategoryAdminService {
         const { _id } = userData;
         if (name && name !== subcategory.name) {
             const oldFolder = `clothing/${category.name}/subcategories/${subcategory.name}`;
-            const newFolder = `clothing/${category.name}/subcategories/${name}`;
+            const newFolder = `clothing/${category.name}/subcategories/${name.toLowerCase()}`;
             // Rename the single image to move it to the new folder
             const newImagePublicId = newFolder + '/' + subcategory.image.public_id.split('/').pop();
             await cloudinary_1.default.uploader.rename(subcategory.image.public_id, newImagePublicId);
             subcategory.image.public_id = newImagePublicId;
-            subcategory.image.secure_url = subcategory.image.secure_url.replace(subcategory.name, name);
+            subcategory.image.secure_url = subcategory.image.secure_url.replace(subcategory.name, name.toLowerCase());
             // Delete the old folder (optional, Cloudinary auto-deletes empty folders)
             await cloudinary_1.default.api.delete_folder(oldFolder).catch(() => {
                 console.log(`Old folder "${oldFolder}" was already empty or does not exist.`);
             });
             // Update subcategory name in DB
-            subcategory.name = name;
+            subcategory.name = name.toLowerCase();
         }
         if (buffer) {
             await (0, uploadSubcategoryImages_1.uploadImageForUpdateSubcategory)(subcategory, category, name, buffer);

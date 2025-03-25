@@ -15,7 +15,7 @@ const updateCategoryImage = async (category, buffer, name) => {
         .toBuffer();
     // Upload to Cloudinary
     const uploadResponse = await new Promise((resolve, reject) => {
-        cloudinary_1.default.uploader.upload_stream({ folder: `clothing/category/${name ? name : category.name}`, format: "webp" }, (error, result) => {
+        cloudinary_1.default.uploader.upload_stream({ folder: `clothing/category/${name ? name.toLowerCase() : category.name}`, format: "webp" }, (error, result) => {
             if (error)
                 reject(error);
             else

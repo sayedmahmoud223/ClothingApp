@@ -22,7 +22,7 @@ class SubcategoryAdminService {
     async readSubcategoryForOneCategory(reqParams: any, categoryId: string) {
         const readAll = new ApiFeature(subcategoryModel.find({ category: categoryId }), reqParams.query).paginate().filter().search().sort();
         const data = await readAll.mongooseQuery
-        const allCount = await subcategoryModel.countDocuments()
+        const allCount = await readAll.getAllCount(subcategoryModel)
         const allPages = Math.ceil(allCount / readAll.queryData.size)
         return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages }
     }
@@ -44,18 +44,18 @@ class SubcategoryAdminService {
         const { _id } = userData
         if (name && name !== subcategory.name) {
             const oldFolder = `clothing/${category.name}/subcategories/${subcategory.name}`;
-            const newFolder = `clothing/${category.name}/subcategories/${name}`;
+            const newFolder = `clothing/${category.name}/subcategories/${name.toLowerCase()}`;
             // Rename the single image to move it to the new folder
             const newImagePublicId = newFolder + '/' + subcategory.image.public_id.split('/').pop();
             await cloudinary.uploader.rename(subcategory.image.public_id, newImagePublicId);
             subcategory.image.public_id = newImagePublicId
-            subcategory.image.secure_url = subcategory.image.secure_url.replace(subcategory.name, name)
+            subcategory.image.secure_url = subcategory.image.secure_url.replace(subcategory.name, name.toLowerCase())
             // Delete the old folder (optional, Cloudinary auto-deletes empty folders)
             await cloudinary.api.delete_folder(oldFolder).catch(() => {
                 console.log(`Old folder "${oldFolder}" was already empty or does not exist.`);
             });
             // Update subcategory name in DB
-            subcategory.name = name;
+            subcategory.name = name.toLowerCase();
         }
 
         if (buffer) {

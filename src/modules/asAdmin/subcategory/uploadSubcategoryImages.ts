@@ -15,7 +15,7 @@ export const uploadImageForCreateSubcategory = async (category: ICategory, name:
     // Upload to Cloudinary
     const uploadResponse: UploadApiResponse = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
-            { folder: `clothing/${category.name}/subcategories/${name}`, format: "webp" },
+            { folder: `clothing/${category.name}/subcategories/${name.toLowerCase()}`, format: "webp" },
             (error, result: any) => {
                 if (error) reject(error);
                 else resolve(result);
@@ -40,7 +40,7 @@ export const uploadImageForUpdateSubcategory = async (subcategory: ISubcategory,
     // Upload to Cloudinary
     const uploadResponse: UploadApiResponse = await new Promise((resolve, reject) => {
         cloudinary.uploader.upload_stream(
-            { folder: `clothing/${category.name}/subcategories/${name ? name : subcategory.name}`, format: "webp" },
+            { folder: `clothing/${category.name}/subcategories/${name ? name.toLowerCase() : subcategory.name}`, format: "webp" },
             (error, result: any) => {
                 if (error) reject(error);
                 else resolve(result);

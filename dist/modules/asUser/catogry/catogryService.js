@@ -9,11 +9,8 @@ const apiFeatures_1 = require("../../../utils/apiFeatures");
 class CategoryService {
     async readAll(reqParams) {
         const readAll = new apiFeatures_1.ApiFeature(catgeoryModel_1.default.find({}), reqParams.query).paginate().filter().search().sort();
-        console.log({ name: readAll.queryData.search });
         const data = await readAll.mongooseQuery;
-        const allCount = readAll.queryData.search ?
-            await catgeoryModel_1.default.countDocuments({ name: readAll.queryData.search })
-            : await catgeoryModel_1.default.countDocuments({});
+        const allCount = await readAll.getAllCount(catgeoryModel_1.default);
         const allPages = Math.ceil(allCount / readAll.queryData.size);
         return { data, allCount, currentPage: readAll.queryData.page, size: readAll.queryData.size, allPages };
     }

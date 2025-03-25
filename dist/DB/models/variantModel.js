@@ -37,7 +37,7 @@ exports.variantModel = exports.variantSchema = void 0;
 const mongoose_1 = __importStar(require("mongoose"));
 exports.variantSchema = new mongoose_1.Schema({
     productId: { type: mongoose_1.Types.ObjectId, ref: "Product" },
-    colorName: { type: String, required: true },
+    colorName: { type: String, required: true, lowercase: true },
     // enum: ['Black', 'Gray', 'White', 'Brown', 'Beige', 'Red', 'Pink', 'Orange', 'Yellow', 'Ivory', 'Green', 'Blue', 'Purple', 'Gold', 'Silver', 'Multi'], required: true },
     avaliable: [{
             size: { type: String, enum: ['XS', 'S', 'M', 'L', 'XL', '2XL'], required: true },

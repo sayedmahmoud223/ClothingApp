@@ -8,7 +8,7 @@ export class ApiFeature<T> {
         this.mongooseQuery = mongooseQuery;
         this.queryData = queryData;
         console.log({ mongooseQuery: this.mongooseQuery });
-        console.log({ query: this.queryData });
+        console.log({ query: this.queryData.search });
     }
 
     paginate(): this {
@@ -22,8 +22,9 @@ export class ApiFeature<T> {
 
         const skip = (page - 1) * size;
         console.log({ skip });
-
+        console.log({ count: this.mongooseQuery.countDocuments() })
         this.mongooseQuery.limit(size).skip(skip);
+
         return this;
     }
 
@@ -60,4 +61,13 @@ export class ApiFeature<T> {
         }
         return this;
     }
+
+    async getAllCount(model: any): Promise<number> {
+        const allCount = this?.queryData?.search ?
+            await model.countDocuments({ name: { $regex: this.queryData.search, $options: "i" } })
+            : await model.countDocuments()
+        console.log({ allCount });
+        return allCount
+    }
+
 }

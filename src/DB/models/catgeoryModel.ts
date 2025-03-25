@@ -13,7 +13,7 @@ export interface ICategory extends Document {
 }
 
 const categorySchema = new Schema<ICategory>({
-    name: { type: String, required: true, unique: true },
+    name: { type: String, required: true, unique: true, lowercase: true },
     image: { secure_url: { type: String, required: true, }, public_id: { type: String, required: true, } },
     createdBy: { type: Types.ObjectId, ref: 'User', required: false },
     updatedBy: { type: Types.ObjectId, ref: 'User', required: false },
